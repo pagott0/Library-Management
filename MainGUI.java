@@ -405,7 +405,7 @@ public class MainGUI {
 
         gbc.gridx = 0;
         gbc.gridy = 1;
-        formPanel.add(new JLabel("Patron ID:"), gbc);
+        formPanel.add(new JLabel("Patron Name:"), gbc);
         gbc.gridx = 1;
         JTextField patronIdField = new JTextField(20);
         formPanel.add(patronIdField, gbc);
@@ -465,7 +465,9 @@ public class MainGUI {
         StringBuilder sb = new StringBuilder();
         for (Loan loan : loans) {
             if (!loan.isReturned()) {
-                sb.append("Book: ").append(loan.getBook().getTitle()).append('\n');
+                Book book = loan.getBook();
+                Patron patron = loan.getPatron();
+                sb.append("Book: ").append(book.getTitle()).append(" | Author: ").append(" | ISBN: ").append(book.getISBN()).append(" | Patron: ").append(patron.getName()).append(" | Contact Info: ").append(patron.getContactInfo()).append(" | Loan Emission Date: ").append(loan.getLoanDate()).append("\n\n");
             }
         }
         activeLoans.setText(sb.toString());
