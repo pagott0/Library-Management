@@ -2,156 +2,223 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 public class MainGUI {
-    private static final String BOOKS_FILE = "books.dat";
-    private static final String PATRONS_FILE = "patrons.dat";
-    private static final String LOANS_FILE = "loans.dat";
-    private static final String USERS_FILE = "users.dat";
-
     private Library library;
+    private User currentUser;
 
     public MainGUI() {
         this.library = new Library();
         loadLibraryData();
-        initGUI();
+        showLoginScreen();
     }
+
+    private void loadLibraryData() {
+        library.loadBooksFromFile("books.dat");
+        library.loadPatronsFromFile("patrons.dat");
+        library.loadLoansFromFile("loans.dat");
+        library.loadUsersFromFile("users.dat");
+    }
+
+    private void saveLibraryData() {
+        library.saveBooksToFile("books.dat");
+        library.savePatronsToFile("patrons.dat");
+        library.saveLoansToFile("loans.dat");
+        library.saveUsersToFile("users.dat");
+    }
+
+    private void showLoginScreen() {
+        JFrame frame = new JFrame("Library Management System - Login");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 200);
+
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 5, 5, 5);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        panel.add(new JLabel("Username:"), gbc);
+        gbc.gridx = 1;
+        JTextField usernameField = new JTextField(20);
+        panel.add(usernameField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        panel.add(new JLabel("Password:"), gbc);
+        gbc.gridx = 1;
+        JPasswordField passwordField = new JPasswordField(20);
+        panel.add(passwordField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 2;
+        JButton loginButton = new JButton("Login");
+        loginButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String username = usernameField.getText();
+                String password = new String(passwordField.getPassword());
+                currentUser = library.authenticateUser(username, password);
+
+                if (currentUser != null) {
+                    frame.dispose();
+                    initGUI();
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Invalid username or password.");
+                }
+            }
+        });
+        panel.add(loginButton, gbc);
+
+        gbc.gridy = 3;
+        JButton registerButton = new JButton("Register");
+        registerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showRegisterScreen();
+            }
+        });
+        panel.add(registerButton, gbc);
+
+        frame.add(panel);
+        frame.setVisible(true);
+    }
+
+    private void showRegisterScreen() {
+      JFrame frame = new JFrame("Library Management System - Register");
+      frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+      frame.setSize(400, 300);
+  
+      JPanel panel = new JPanel(new GridBagLayout());
+      GridBagConstraints gbc = new GridBagConstraints();
+      gbc.fill = GridBagConstraints.HORIZONTAL;
+      gbc.insets = new Insets(5, 5, 5, 5);
+  
+      gbc.gridx = 0;
+      gbc.gridy = 0;
+      panel.add(new JLabel("Username:"), gbc);
+      gbc.gridx = 1;
+      JTextField usernameField = new JTextField(20);
+      panel.add(usernameField, gbc);
+  
+      gbc.gridx = 0;
+      gbc.gridy = 1;
+      panel.add(new JLabel("Password:"), gbc);
+      gbc.gridx = 1;
+      JPasswordField passwordField = new JPasswordField(20);
+      panel.add(passwordField, gbc);
+  
+      gbc.gridx = 0;
+      gbc.gridy = 2;
+      panel.add(new JLabel("Confirm Password:"), gbc);
+      gbc.gridx = 1;
+      JPasswordField confirmPasswordField = new JPasswordField(20);
+      panel.add(confirmPasswordField, gbc);
+  
+      gbc.gridx = 0;
+      gbc.gridy = 3;
+      panel.add(new JLabel("Role:"), gbc);
+      gbc.gridx = 1;
+      JPanel rolePanel = new JPanel(new GridLayout(1, 2));
+      JRadioButton adminRadioButton = new JRadioButton("Admin");
+      JRadioButton librarianRadioButton = new JRadioButton("Librarian");
+      ButtonGroup roleGroup = new ButtonGroup();
+      roleGroup.add(adminRadioButton);
+      roleGroup.add(librarianRadioButton);
+      rolePanel.add(adminRadioButton);
+      rolePanel.add(librarianRadioButton);
+      panel.add(rolePanel, gbc);
+  
+      gbc.gridx = 0;
+      gbc.gridy = 4;
+      gbc.gridwidth = 2;
+      JButton registerButton = new JButton("Register");
+      registerButton.addActionListener(new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+              String username = usernameField.getText();
+              String password = new String(passwordField.getPassword());
+              String confirmPassword = new String(confirmPasswordField.getPassword());
+              String role = adminRadioButton.isSelected() ? "admin" : "librarian";
+  
+              if (!password.equals(confirmPassword)) {
+                  JOptionPane.showMessageDialog(frame, "Passwords do not match.");
+                  return;
+              }
+  
+              if (library.registerUserWithReturn(username, password, role)) {
+                  JOptionPane.showMessageDialog(frame, "Registration successful. You can now log in.");
+                  frame.dispose();
+              } else {
+                  JOptionPane.showMessageDialog(frame, "Registration failed. Username might be taken.");
+              }
+          }
+      });
+      panel.add(registerButton, gbc);
+  
+      frame.add(panel);
+      frame.setVisible(true);
+  }
+  
 
     private void initGUI() {
         JFrame frame = new JFrame("Library Management System");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
 
-        if (showLoginDialog(frame)) {
-            JTabbedPane tabbedPane = new JTabbedPane();
+        JTabbedPane tabbedPane = new JTabbedPane();
 
-            tabbedPane.addTab("Books", createBookPanel());
-            tabbedPane.addTab("Patrons", createPatronPanel());
-            tabbedPane.addTab("Loans", createLoanPanel());
+        tabbedPane.addTab("Books", createBookPanel());
+        tabbedPane.addTab("Patrons", createPatronPanel());
+        tabbedPane.addTab("Loans", createLoanPanel());
 
-            frame.add(tabbedPane);
-            frame.setVisible(true);
-        } else {
-            JOptionPane.showMessageDialog(frame, "Invalid login. Exiting...");
-            System.exit(0);
-        }
-    }
+        frame.add(tabbedPane);
+        frame.setVisible(true);
 
-    private boolean showLoginDialog(JFrame parent) {
-        JDialog dialog = new JDialog(parent, "Login", true);
-        JPanel panel = new JPanel(new GridLayout(4, 2));
-        JTextField usernameField = new JTextField();
-        JPasswordField passwordField = new JPasswordField();
-
-        panel.add(new JLabel("Username:"));
-        panel.add(usernameField);
-        panel.add(new JLabel("Password:"));
-        panel.add(passwordField);
-
-        JButton loginButton = new JButton("Login");
-        JButton registerButton = new JButton("Register");
-
-        panel.add(loginButton);
-        panel.add(registerButton);
-
-        dialog.add(panel);
-        dialog.pack();
-        dialog.setLocationRelativeTo(parent);
-
-        loginButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String username = usernameField.getText();
-                String password = new String(passwordField.getPassword());
-                User user = library.authenticateUser(username, password);
-                if (user != null) {
-                    JOptionPane.showMessageDialog(dialog, "Welcome, " + user.getRole() + "!");
-                    dialog.dispose();
-                } else {
-                    JOptionPane.showMessageDialog(dialog, "Invalid username or password.");
-                }
-            }
-        });
-
-        registerButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dialog.dispose();
-                showRegisterDialog(parent);
-            }
-        });
-
-        dialog.setVisible(true);
-        return library.getLoggedInUser() != null;
-    }
-
-    private void showRegisterDialog(JFrame parent) {
-        JDialog dialog = new JDialog(parent, "Register", true);
-        JPanel panel = new JPanel(new GridLayout(5, 2));
-        JTextField usernameField = new JTextField();
-        JPasswordField passwordField = new JPasswordField();
-        JComboBox<String> roleComboBox = new JComboBox<>(new String[]{"Librarian", "Administrator"});
-
-        panel.add(new JLabel("Username:"));
-        panel.add(usernameField);
-        panel.add(new JLabel("Password:"));
-        panel.add(passwordField);
-        panel.add(new JLabel("Role:"));
-        panel.add(roleComboBox);
-
-        JButton registerButton = new JButton("Register");
-        JButton loginButton = new JButton("Login");
-
-        panel.add(registerButton);
-        panel.add(loginButton);
-
-        dialog.add(panel);
-        dialog.pack();
-        dialog.setLocationRelativeTo(parent);
-
-        registerButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String username = usernameField.getText();
-                String password = new String(passwordField.getPassword());
-                String role = (String) roleComboBox.getSelectedItem();
-
-                library.registerUser(username, password, role);
-                JOptionPane.showMessageDialog(dialog, "User registered successfully!");
-                dialog.dispose();
-                showLoginDialog(parent);
-            }
-        });
-
-        loginButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dialog.dispose();
-                showLoginDialog(parent);
-            }
-        });
-
-        dialog.setVisible(true);
+        Runtime.getRuntime().addShutdownHook(new Thread(this::saveLibraryData));
     }
 
     private JPanel createBookPanel() {
         JPanel panel = new JPanel(new BorderLayout());
-        JPanel formPanel = new JPanel(new GridLayout(5, 2));
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
 
-        JTextField titleField = new JTextField();
-        JTextField authorField = new JTextField();
-        JTextField isbnField = new JTextField();
-        JTextField categoryField = new JTextField();
+        formPanel.add(new JLabel("Title:"), gbc);
+        gbc.gridx = 1;
+        JTextField titleField = new JTextField(20);
+        formPanel.add(titleField, gbc);
 
-        formPanel.add(new JLabel("Title:"));
-        formPanel.add(titleField);
-        formPanel.add(new JLabel("Author:"));
-        formPanel.add(authorField);
-        formPanel.add(new JLabel("ISBN:"));
-        formPanel.add(isbnField);
-        formPanel.add(new JLabel("Category:"));
-        formPanel.add(categoryField);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        formPanel.add(new JLabel("Author:"), gbc);
+        gbc.gridx = 1;
+        JTextField authorField = new JTextField(20);
+        formPanel.add(authorField, gbc);
 
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        formPanel.add(new JLabel("ISBN:"), gbc);
+        gbc.gridx = 1;
+        JTextField isbnField = new JTextField(20);
+        formPanel.add(isbnField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        formPanel.add(new JLabel("Category:"), gbc);
+        gbc.gridx = 1;
+        JTextField categoryField = new JTextField(20);
+        formPanel.add(categoryField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.gridwidth = 2;
         JButton addButton = new JButton("Add Book");
         addButton.addActionListener(new ActionListener() {
             @Override
@@ -165,22 +232,33 @@ public class MainGUI {
                 JOptionPane.showMessageDialog(panel, "Book added successfully!");
             }
         });
+        formPanel.add(addButton, gbc);
 
-        formPanel.add(addButton);
+        panel.add(formPanel, BorderLayout.NORTH);
 
         // Search fields
-        JPanel searchPanel = new JPanel(new GridLayout(2, 2));
-        JTextField searchField = new JTextField();
+        JPanel searchPanel = new JPanel(new GridBagLayout());
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 1;
+        searchPanel.add(new JLabel("Criteria:"), gbc);
+        gbc.gridx = 1;
         JComboBox<String> searchCriteria = new JComboBox<>(new String[]{"Title", "Author", "ISBN", "Category"});
+        searchPanel.add(searchCriteria, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        searchPanel.add(new JLabel("Search:"), gbc);
+        gbc.gridx = 1;
+        JTextField searchField = new JTextField(20);
+        searchPanel.add(searchField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 2;
+        JButton searchButton = new JButton("Search");
         JTextArea searchResults = new JTextArea(10, 50);
         searchResults.setEditable(false);
-
-        searchPanel.add(new JLabel("Search:"));
-        searchPanel.add(searchField);
-        searchPanel.add(new JLabel("Criteria:"));
-        searchPanel.add(searchCriteria);
-
-        JButton searchButton = new JButton("Search");
         searchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -210,27 +288,38 @@ public class MainGUI {
                 }
             }
         });
+        searchPanel.add(searchButton, gbc);
 
-        panel.add(formPanel, BorderLayout.NORTH);
         panel.add(searchPanel, BorderLayout.CENTER);
         panel.add(new JScrollPane(searchResults), BorderLayout.SOUTH);
-        searchPanel.add(searchButton);
 
         return panel;
     }
 
     private JPanel createPatronPanel() {
         JPanel panel = new JPanel(new BorderLayout());
-        JPanel formPanel = new JPanel(new GridLayout(3, 2));
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
 
-        JTextField nameField = new JTextField();
-        JTextField contactField = new JTextField();
+        formPanel.add(new JLabel("Name:"), gbc);
+        gbc.gridx = 1;
+        JTextField nameField = new JTextField(20);
+        formPanel.add(nameField, gbc);
 
-        formPanel.add(new JLabel("Name:"));
-        formPanel.add(nameField);
-        formPanel.add(new JLabel("Contact:"));
-        formPanel.add(contactField);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        formPanel.add(new JLabel("Contact:"), gbc);
+        gbc.gridx = 1;
+        JTextField contactField = new JTextField(20);
+        formPanel.add(contactField, gbc);
 
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 2;
         JButton addButton = new JButton("Add Patron");
         addButton.addActionListener(new ActionListener() {
             @Override
@@ -242,22 +331,33 @@ public class MainGUI {
                 JOptionPane.showMessageDialog(panel, "Patron added successfully!");
             }
         });
+        formPanel.add(addButton, gbc);
 
-        formPanel.add(addButton);
+        panel.add(formPanel, BorderLayout.NORTH);
 
         // Search fields
-        JPanel searchPanel = new JPanel(new GridLayout(2, 2));
-        JTextField searchField = new JTextField();
+        JPanel searchPanel = new JPanel(new GridBagLayout());
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 1;
+        searchPanel.add(new JLabel("Criteria:"), gbc);
+        gbc.gridx = 1;
         JComboBox<String> searchCriteria = new JComboBox<>(new String[]{"Name", "Contact Information"});
+        searchPanel.add(searchCriteria, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        searchPanel.add(new JLabel("Search:"), gbc);
+        gbc.gridx = 1;
+        JTextField searchField = new JTextField(20);
+        searchPanel.add(searchField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 2;
+        JButton searchButton = new JButton("Search");
         JTextArea searchResults = new JTextArea(10, 50);
         searchResults.setEditable(false);
-
-        searchPanel.add(new JLabel("Search:"));
-        searchPanel.add(searchField);
-        searchPanel.add(new JLabel("Criteria:"));
-        searchPanel.add(searchCriteria);
-
-        JButton searchButton = new JButton("Search");
         searchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -281,81 +381,97 @@ public class MainGUI {
                 }
             }
         });
+        searchPanel.add(searchButton, gbc);
 
-        panel.add(formPanel, BorderLayout.NORTH);
         panel.add(searchPanel, BorderLayout.CENTER);
         panel.add(new JScrollPane(searchResults), BorderLayout.SOUTH);
-        searchPanel.add(searchButton);
 
         return panel;
     }
 
     private JPanel createLoanPanel() {
         JPanel panel = new JPanel(new BorderLayout());
-        JPanel formPanel = new JPanel(new GridLayout(3, 2));
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
 
-        JTextField isbnField = new JTextField();
-        JTextField patronNameField = new JTextField();
+        formPanel.add(new JLabel("Book ISBN:"), gbc);
+        gbc.gridx = 1;
+        JTextField isbnField = new JTextField(20);
+        formPanel.add(isbnField, gbc);
 
-        formPanel.add(new JLabel("Book ISBN:"));
-        formPanel.add(isbnField);
-        formPanel.add(new JLabel("Patron Name:"));
-        formPanel.add(patronNameField);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        formPanel.add(new JLabel("Patron ID:"), gbc);
+        gbc.gridx = 1;
+        JTextField patronIdField = new JTextField(20);
+        formPanel.add(patronIdField, gbc);
 
-        JButton checkoutButton = new JButton("Check Out Book");
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 2;
+        JTextArea activeLoans = new JTextArea(10, 50);
+        JButton checkoutButton = new JButton("Check Out");
         checkoutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String isbn = isbnField.getText();
-                String patronName = patronNameField.getText();
+                String patronId = patronIdField.getText();
 
-                library.checkOutBook(isbn, patronName);
-                JOptionPane.showMessageDialog(panel, "Book checked out successfully!");
+                if (library.checkOutBookWithReturn(isbn, patronId)) {
+                    JOptionPane.showMessageDialog(panel, "Book checked out successfully!");
+                    updateActiveLoans(activeLoans);
+                } else {
+                    JOptionPane.showMessageDialog(panel, "Failed to check out book.");
+                }
             }
         });
+        formPanel.add(checkoutButton, gbc);
 
-        JButton checkinButton = new JButton("Check In Book");
+        gbc.gridy = 3;
+        JButton checkinButton = new JButton("Check In");
         checkinButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String isbn = isbnField.getText();
 
-                library.checkInBook(isbn);
-                JOptionPane.showMessageDialog(panel, "Book checked in successfully!");
+                if (library.checkInBookWithReturn(isbn)) {
+                    JOptionPane.showMessageDialog(panel, "Book checked in successfully!");
+                    updateActiveLoans(activeLoans);
+                } else {
+                    JOptionPane.showMessageDialog(panel, "Failed to check in book.");
+                }
             }
         });
+        formPanel.add(checkinButton, gbc);
 
-        formPanel.add(checkoutButton);
-        formPanel.add(checkinButton);
         panel.add(formPanel, BorderLayout.NORTH);
+
+        // List of active loans
+        
+        activeLoans.setEditable(false);
+        panel.add(new JScrollPane(activeLoans), BorderLayout.CENTER);
+
+        updateActiveLoans(activeLoans);
 
         return panel;
     }
 
-    private void loadLibraryData() {
-        library.loadBooksFromFile(BOOKS_FILE);
-        library.loadPatronsFromFile(PATRONS_FILE);
-        library.loadLoansFromFile(LOANS_FILE);
-        library.loadUsersFromFile(USERS_FILE);
-    }
-
-    private void saveLibraryData() {
-        library.saveBooksToFile(BOOKS_FILE);
-        library.savePatronsToFile(PATRONS_FILE);
-        library.saveLoansToFile(LOANS_FILE);
-        library.saveUsersToFile(USERS_FILE);
+    private void updateActiveLoans(JTextArea activeLoans) {
+        List<Loan> loans = library.getAllLoans();
+        StringBuilder sb = new StringBuilder();
+        for (Loan loan : loans) {
+            if (!loan.isReturned()) {
+                sb.append("Book: ").append(loan.getBook().getTitle()).append('\n');
+            }
+        }
+        activeLoans.setText(sb.toString());
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                MainGUI mainGUI = new MainGUI();
-                // Salvar dados ao fechar a GUI
-                Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                    mainGUI.saveLibraryData();
-                }));
-            }
-        });
+        SwingUtilities.invokeLater(() -> new MainGUI());
     }
 }

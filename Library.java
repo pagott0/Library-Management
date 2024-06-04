@@ -22,6 +22,10 @@ public class Library implements Serializable {
       users.add(user);
   }
 
+  public List<Loan> getAllLoans() {
+    return loans;
+  }
+
   public User authenticateUser(String username, String password) {
       for (User user : users) {
           if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
@@ -43,6 +47,12 @@ public class Library implements Serializable {
   public void registerUser(String username, String password, String role) {
     users.add(new User(username, password, role));
     saveUsersToFile("users.dat"); // Salva imediatamente após registrar
+}
+
+public boolean registerUserWithReturn(String username, String password, String role) {
+  users.add(new User(username, password, role));
+  saveUsersToFile("users.dat"); // Salva imediatamente após registrar
+  return true;
 }
 
   public void saveUsersToFile(String filename) {
@@ -223,6 +233,19 @@ public void loadLoansFromFile(String filename) {
         }
     }
 
+    public boolean checkOutBookWithReturn(String ISBN, String patronName) {
+      Book book = searchBookByISBN(ISBN);
+      Patron patron = searchPatronByName(patronName);
+
+      if (book != null && book.isAvailable() && patron != null) {
+          Loan loan = new Loan(book, patron, new java.util.Date());
+          loans.add(loan);
+          book.setAvailable(false);
+          return true;
+      }
+      return false;
+  }
+
     public void checkInBook(String ISBN) {
         for (Loan loan : loans) {
             if (loan.getBook().getISBN().equals(ISBN) && !loan.isReturned()) {
@@ -233,6 +256,18 @@ public void loadLoansFromFile(String filename) {
             }
         }
     }
+
+    public boolean  checkInBookWithReturn(String ISBN) {
+      for (Loan loan : loans) {
+          if (loan.getBook().getISBN().equals(ISBN) && !loan.isReturned()) {
+              loan.setReturned(true);
+              loan.getBook().setAvailable(true);
+              loan.setReturnDate(new java.util.Date());
+              return true;
+          }
+      }
+      return false;
+  }
 
     public List<Loan> getOverdueLoans() {
         List<Loan> overdueLoans = new ArrayList<>();
