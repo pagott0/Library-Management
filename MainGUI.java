@@ -4,13 +4,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class MainGUI {
-    private Library library;
     private static final String BOOKS_FILE = "books.dat";
     private static final String PATRONS_FILE = "patrons.dat";
     private static final String LOANS_FILE = "loans.dat";
+    private static final String USERS_FILE = "users.dat";
+
+    private Library library;
 
     public MainGUI() {
         this.library = new Library();
+        library.addUser(new User("admin", "password", "Administrator")); //TODO: add users manually
         loadLibraryData();
         initGUI();
     }
@@ -20,14 +23,42 @@ public class MainGUI {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
 
-        JTabbedPane tabbedPane = new JTabbedPane();
+        if (showLoginDialog(frame)) {
+            JTabbedPane tabbedPane = new JTabbedPane();
 
-        tabbedPane.addTab("Books", createBookPanel());
-        tabbedPane.addTab("Patrons", createPatronPanel());
-        tabbedPane.addTab("Loans", createLoanPanel());
+            tabbedPane.addTab("Books", createBookPanel());
+            tabbedPane.addTab("Patrons", createPatronPanel());
+            tabbedPane.addTab("Loans", createLoanPanel());
 
-        frame.add(tabbedPane);
-        frame.setVisible(true);
+            frame.add(tabbedPane);
+            frame.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(frame, "Invalid login. Exiting...");
+            System.exit(0);
+        }
+    }
+
+    private boolean showLoginDialog(JFrame parent) {
+        JPanel panel = new JPanel(new GridLayout(3, 2));
+        JTextField usernameField = new JTextField();
+        JPasswordField passwordField = new JPasswordField();
+
+        panel.add(new JLabel("Username:"));
+        panel.add(usernameField);
+        panel.add(new JLabel("Password:"));
+        panel.add(passwordField);
+
+        int result = JOptionPane.showConfirmDialog(parent, panel, "Login", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        if (result == JOptionPane.OK_OPTION) {
+            String username = usernameField.getText();
+            String password = new String(passwordField.getPassword());
+            User user = library.authenticateUser(username, password);
+            if (user != null) {
+                JOptionPane.showMessageDialog(parent, "Welcome, " + user.getRole() + "!");
+                return true;
+            }
+        }
+        return false;
     }
 
     private JPanel createBookPanel() {
@@ -229,27 +260,29 @@ public class MainGUI {
     }
 
     private void loadLibraryData() {
-      library.loadBooksFromFile(BOOKS_FILE);
-      library.loadPatronsFromFile(PATRONS_FILE);
-      library.loadLoansFromFile(LOANS_FILE);
-  }
+        library.loadBooksFromFile(BOOKS_FILE);
+        library.loadPatronsFromFile(PATRONS_FILE);
+        library.loadLoansFromFile(LOANS_FILE);
+        library.loadUsersFromFile(USERS_FILE);
+    }
 
-  private void saveLibraryData() {
-      library.saveBooksToFile(BOOKS_FILE);
-      library.savePatronsToFile(PATRONS_FILE);
-      library.saveLoansToFile(LOANS_FILE);
-  }
+    private void saveLibraryData() {
+        library.saveBooksToFile(BOOKS_FILE);
+        library.savePatronsToFile(PATRONS_FILE);
+        library.saveLoansToFile(LOANS_FILE);
+        library.saveUsersToFile(USERS_FILE);
+    }
 
-  public static void main(String[] args) {
-    SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-            MainGUI mainGUI = new MainGUI();
-            // Salvar dados ao fechar a GUI
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                mainGUI.saveLibraryData();
-            }));
-        }
-    });
-}
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                MainGUI mainGUI = new MainGUI();
+                // Salvar dados ao fechar a GUI
+                Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                    mainGUI.saveLibraryData();
+                }));
+            }
+        });
+    }
 }

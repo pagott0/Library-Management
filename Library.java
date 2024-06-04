@@ -6,12 +6,56 @@ public class Library implements Serializable {
     private List<Book> books;
     private List<Patron> patrons;
     private List<Loan> loans;
+    private User loggedInUser;
+    private List<User> users;
 
     public Library() {
         this.books = new ArrayList<>();
         this.patrons = new ArrayList<>();
         this.loans = new ArrayList<>();
+        this.loggedInUser = null;
+        this.users = new ArrayList<>();
     }
+
+    public void addUser(User user) {
+      users.add(user);
+  }
+
+  public User authenticateUser(String username, String password) {
+      for (User user : users) {
+          if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
+              loggedInUser = user;
+              return user;
+          }
+      }
+      return null;
+  }
+
+  public User getLoggedInUser() {
+      return loggedInUser;
+  }
+
+  public void logout() {
+      loggedInUser = null;
+  }
+
+  public void saveUsersToFile(String filename) {
+    try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(filename))) {
+        outputStream.writeObject(users);
+        System.out.println("Users saved successfully!");
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
+
+public void loadUsersFromFile(String filename) {
+    try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(filename))) {
+        users = (List<User>) inputStream.readObject();
+        System.out.println("Users loaded successfully!");
+    } catch (IOException | ClassNotFoundException e) {
+        e.printStackTrace();
+    }
+}
 
     // Book Management
     public void addBook(Book book) {
