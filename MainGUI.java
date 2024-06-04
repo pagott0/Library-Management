@@ -13,7 +13,6 @@ public class MainGUI {
 
     public MainGUI() {
         this.library = new Library();
-        library.addUser(new User("admin", "password", "Administrator")); //TODO: add users manually
         loadLibraryData();
         initGUI();
     }
@@ -39,7 +38,8 @@ public class MainGUI {
     }
 
     private boolean showLoginDialog(JFrame parent) {
-        JPanel panel = new JPanel(new GridLayout(3, 2));
+        JDialog dialog = new JDialog(parent, "Login", true);
+        JPanel panel = new JPanel(new GridLayout(4, 2));
         JTextField usernameField = new JTextField();
         JPasswordField passwordField = new JPasswordField();
 
@@ -48,17 +48,90 @@ public class MainGUI {
         panel.add(new JLabel("Password:"));
         panel.add(passwordField);
 
-        int result = JOptionPane.showConfirmDialog(parent, panel, "Login", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-        if (result == JOptionPane.OK_OPTION) {
-            String username = usernameField.getText();
-            String password = new String(passwordField.getPassword());
-            User user = library.authenticateUser(username, password);
-            if (user != null) {
-                JOptionPane.showMessageDialog(parent, "Welcome, " + user.getRole() + "!");
-                return true;
+        JButton loginButton = new JButton("Login");
+        JButton registerButton = new JButton("Register");
+
+        panel.add(loginButton);
+        panel.add(registerButton);
+
+        dialog.add(panel);
+        dialog.pack();
+        dialog.setLocationRelativeTo(parent);
+
+        loginButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String username = usernameField.getText();
+                String password = new String(passwordField.getPassword());
+                User user = library.authenticateUser(username, password);
+                if (user != null) {
+                    JOptionPane.showMessageDialog(dialog, "Welcome, " + user.getRole() + "!");
+                    dialog.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(dialog, "Invalid username or password.");
+                }
             }
-        }
-        return false;
+        });
+
+        registerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dialog.dispose();
+                showRegisterDialog(parent);
+            }
+        });
+
+        dialog.setVisible(true);
+        return library.getLoggedInUser() != null;
+    }
+
+    private void showRegisterDialog(JFrame parent) {
+        JDialog dialog = new JDialog(parent, "Register", true);
+        JPanel panel = new JPanel(new GridLayout(5, 2));
+        JTextField usernameField = new JTextField();
+        JPasswordField passwordField = new JPasswordField();
+        JComboBox<String> roleComboBox = new JComboBox<>(new String[]{"Librarian", "Administrator"});
+
+        panel.add(new JLabel("Username:"));
+        panel.add(usernameField);
+        panel.add(new JLabel("Password:"));
+        panel.add(passwordField);
+        panel.add(new JLabel("Role:"));
+        panel.add(roleComboBox);
+
+        JButton registerButton = new JButton("Register");
+        JButton loginButton = new JButton("Login");
+
+        panel.add(registerButton);
+        panel.add(loginButton);
+
+        dialog.add(panel);
+        dialog.pack();
+        dialog.setLocationRelativeTo(parent);
+
+        registerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String username = usernameField.getText();
+                String password = new String(passwordField.getPassword());
+                String role = (String) roleComboBox.getSelectedItem();
+
+                library.registerUser(username, password, role);
+                JOptionPane.showMessageDialog(dialog, "User registered successfully!");
+                dialog.dispose();
+                showLoginDialog(parent);
+            }
+        });
+
+        loginButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dialog.dispose();
+                showLoginDialog(parent);
+            }
+        });
+
+        dialog.setVisible(true);
     }
 
     private JPanel createBookPanel() {

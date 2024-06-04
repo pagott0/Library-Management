@@ -15,6 +15,7 @@ public class Library implements Serializable {
         this.loans = new ArrayList<>();
         this.loggedInUser = null;
         this.users = new ArrayList<>();
+        loadUsersFromFile("users.dat");
     }
 
     public void addUser(User user) {
@@ -38,6 +39,11 @@ public class Library implements Serializable {
   public void logout() {
       loggedInUser = null;
   }
+
+  public void registerUser(String username, String password, String role) {
+    users.add(new User(username, password, role));
+    saveUsersToFile("users.dat"); // Salva imediatamente após registrar
+}
 
   public void saveUsersToFile(String filename) {
     try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(filename))) {
