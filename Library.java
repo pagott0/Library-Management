@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Library implements Serializable {
@@ -245,7 +246,7 @@ public void loadLoansFromFile(String filename) {
     }
 
     // Loan Management
-    public void checkOutBook(String ISBN, String patronName) {
+    /* public void checkOutBook(String ISBN, String patronName) {
         Book book = searchBookByISBN(ISBN);
         Patron patron = searchPatronByName(patronName);
 
@@ -254,14 +255,14 @@ public void loadLoansFromFile(String filename) {
             loans.add(loan);
             book.setAvailable(false);
         }
-    }
+    } */
 
-    public boolean checkOutBookWithReturn(String ISBN, String patronName) {
-      Book book = searchBookByISBN(ISBN);
+    public boolean checkOutBookWithReturn(String isbn, String patronName, Date dueDate) {
+      Book book = searchBookByISBN(isbn);
       Patron patron = searchPatronByName(patronName);
 
-      if (book != null && book.isAvailable() && patron != null) {
-          Loan loan = new Loan(book, patron, new java.util.Date());
+      if (book != null && patron != null && !isBookLoaned(isbn)) {
+          Loan loan = new Loan(book, patron, new Date(), dueDate);
           loans.add(loan);
           book.setAvailable(false);
           return true;
@@ -269,7 +270,7 @@ public void loadLoansFromFile(String filename) {
       return false;
   }
 
-    public void checkInBook(String ISBN) {
+    /* public void checkInBook(String ISBN) {
         for (Loan loan : loans) {
             if (loan.getBook().getISBN().equals(ISBN) && !loan.isReturned()) {
                 loan.setReturned(true);
@@ -278,19 +279,27 @@ public void loadLoansFromFile(String filename) {
                 return;
             }
         }
-    }
+    } */
 
-    public boolean  checkInBookWithReturn(String ISBN) {
+    public boolean checkInBookWithReturn(String isbn) {
       for (Loan loan : loans) {
-          if (loan.getBook().getISBN().equals(ISBN) && !loan.isReturned()) {
-              loan.setReturned(true);
+          if (loan.getBook().getISBN().equals(isbn) && !loan.isReturned()) {
+              loan.returnBook(new Date());
               loan.getBook().setAvailable(true);
-              loan.setReturnDate(new java.util.Date());
               return true;
           }
       }
       return false;
   }
+
+  private boolean isBookLoaned(String isbn) {
+    for (Loan loan : loans) {
+        if (loan.getBook().getISBN().equals(isbn) && !loan.isReturned()) {
+            return true;
+        }
+    }
+    return false;
+}
 
     public List<Loan> getOverdueLoans() {
         List<Loan> overdueLoans = new ArrayList<>();

@@ -6,13 +6,16 @@ public class Loan implements Serializable {
     private Patron patron;
     private Date loanDate;
     private Date returnDate;
+    private Date dueDate;
+    private static final double FINE_AMOUNT = 100.0;
     private boolean isReturned;
 
-    public Loan(Book book, Patron patron, Date loanDate) {
+    public Loan(Book book, Patron patron, Date loanDate, Date dueDate) {
         this.book = book;
         this.patron = patron;
         this.loanDate = loanDate;
         this.isReturned = false;
+        this.dueDate = dueDate;
     }
 
     // Getters and Setters
@@ -44,6 +47,10 @@ public class Loan implements Serializable {
         return returnDate;
     }
 
+    public Date getDueDate() {
+      return dueDate;
+  }
+
     public void setReturnDate(Date returnDate) {
         this.returnDate = returnDate;
     }
@@ -55,6 +62,23 @@ public class Loan implements Serializable {
     public void setReturned(boolean returned) {
         isReturned = returned;
     }
+
+    public void returnBook(Date returnDate) {
+      this.returnDate = returnDate;
+      this.isReturned = true;
+  }
+
+  public boolean isOverdue() {
+    return returnDate != null && returnDate.after(dueDate);
+}
+
+public double getFine() {
+  if (isOverdue()) {
+      return FINE_AMOUNT;
+  }
+  return 0;
+}
+
 
     @Override
     public String toString() {

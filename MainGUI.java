@@ -1,8 +1,14 @@
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MainGUI {
@@ -175,11 +181,24 @@ public class MainGUI {
         tabbedPane.addTab("Books", createBookPanel());
         tabbedPane.addTab("Patrons", createPatronPanel());
         tabbedPane.addTab("Loans", createLoanPanel());
+        tabbedPane.addTab("Overdue Fines", createOverdueFinesPanel());
 
         frame.add(tabbedPane);
         frame.setVisible(true);
 
         Runtime.getRuntime().addShutdownHook(new Thread(this::saveLibraryData));
+    }
+
+    JTextArea overdueFines = new JTextArea(10, 50); // fora do método createOverdueFinesPanel para conseguir atualizar nos check outs e check ins na pág loans usando o método updateOverdueFines
+    private JPanel createOverdueFinesPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+        overdueFines.setEditable(false);
+        panel.add(new JLabel("Overdue Fines"));
+        panel.add(new JScrollPane(overdueFines), BorderLayout.CENTER);
+
+        updateOverdueFines(overdueFines);
+
+        return panel;
     }
 
     private JPanel createBookPanel() {
@@ -493,6 +512,13 @@ public class MainGUI {
 
         gbc.gridx = 0;
         gbc.gridy = 2;
+        formPanel.add(new JLabel("Due Date (dd/MM/yyyy):"), gbc);
+        gbc.gridx = 1;
+        JTextField dueDateField = new JTextField(20);
+        formPanel.add(dueDateField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 3;
         gbc.gridwidth = 2;
         JTextArea activeLoans = new JTextArea(10, 50);
         JButton checkoutButton = new JButton("Check Out");
@@ -501,18 +527,26 @@ public class MainGUI {
             public void actionPerformed(ActionEvent e) {
                 String isbn = isbnField.getText();
                 String patronId = patronIdField.getText();
+                String dueDateStr = dueDateField.getText();
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-                if (library.checkOutBookWithReturn(isbn, patronId)) {
-                    JOptionPane.showMessageDialog(panel, "Book checked out successfully!");
-                    updateActiveLoans(activeLoans);
-                } else {
-                    JOptionPane.showMessageDialog(panel, "Failed to check out book.");
+                try {
+                    Date dueDate = sdf.parse(dueDateStr);
+                    if (library.checkOutBookWithReturn(isbn, patronId, dueDate)) {
+                        JOptionPane.showMessageDialog(panel, "Book checked out successfully!");
+                        updateActiveLoans(activeLoans);
+                        updateOverdueFines(overdueFines);
+                    } else {
+                        JOptionPane.showMessageDialog(panel, "Failed to check out book.");
+                    }
+                } catch (ParseException ex) {
+                    JOptionPane.showMessageDialog(panel, "Invalid date format.");
                 }
             }
         });
         formPanel.add(checkoutButton, gbc);
 
-        gbc.gridy = 3;
+        gbc.gridy = 4;
         JButton checkinButton = new JButton("Check In");
         checkinButton.addActionListener(new ActionListener() {
             @Override
@@ -522,6 +556,7 @@ public class MainGUI {
                 if (library.checkInBookWithReturn(isbn)) {
                     JOptionPane.showMessageDialog(panel, "Book checked in successfully!");
                     updateActiveLoans(activeLoans);
+                    updateOverdueFines(overdueFines);
                 } else {
                     JOptionPane.showMessageDialog(panel, "Failed to check in book.");
                 }
@@ -532,27 +567,40 @@ public class MainGUI {
         panel.add(formPanel, BorderLayout.NORTH);
 
         // List of active loans
-        
         activeLoans.setEditable(false);
         panel.add(new JScrollPane(activeLoans), BorderLayout.CENTER);
 
         updateActiveLoans(activeLoans);
 
+
         return panel;
     }
 
     private void updateActiveLoans(JTextArea activeLoans) {
-        List<Loan> loans = library.getAllLoans();
-        StringBuilder sb = new StringBuilder();
-        for (Loan loan : loans) {
-            if (!loan.isReturned()) {
-                Book book = loan.getBook();
-                Patron patron = loan.getPatron();
-                sb.append("Book: ").append(book.getTitle()).append(" | Author: ").append(" | ISBN: ").append(book.getISBN()).append(" | Patron: ").append(patron.getName()).append(" | Contact Info: ").append(patron.getContactInfo()).append(" | Loan Emission Date: ").append(loan.getLoanDate()).append("\n\n");
-            }
-        }
-        activeLoans.setText(sb.toString());
-    }
+      List<Loan> loans = library.getAllLoans();
+      StringBuilder sb = new StringBuilder();
+      for (Loan loan : loans) {
+          if (!loan.isReturned()) {
+              Book book = loan.getBook();
+              Patron patron = loan.getPatron();
+              sb.append("Book: ").append(book.getTitle()).append(" | Author: ").append(book.getAuthor()).append(" | ISBN: ").append(book.getISBN()).append(" | Patron: ").append(patron.getName()).append(" | Contact Info: ").append(patron.getContactInfo()).append(" | Loan Emission Date: ").append(loan.getLoanDate()).append(" | Due Date: ").append(loan.getDueDate()).append("\n\n");
+          }
+      }
+      activeLoans.setText(sb.toString());
+  }
+
+  private void updateOverdueFines(JTextArea overdueFines) {
+      List<Loan> loans = library.getAllLoans();
+      StringBuilder sb = new StringBuilder();
+      for (Loan loan : loans) {
+          if (loan.isOverdue()) {
+              Book book = loan.getBook();
+              Patron patron = loan.getPatron();
+              sb.append("Book: ").append(book.getTitle()).append(" | Author: ").append(book.getAuthor()).append(" | ISBN: ").append(book.getISBN()).append(" | Patron: ").append(patron.getName()).append(" | Contact Info: ").append(patron.getContactInfo()).append(" | Due Date: ").append(loan.getDueDate()).append(" | Return Date: ").append(loan.getReturnDate()).append(" | Fine: $").append(loan.getFine()).append("\n\n");
+          }
+      }
+      overdueFines.setText(sb.toString());
+  }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new MainGUI());
