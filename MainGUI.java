@@ -193,7 +193,6 @@ public class MainGUI {
     private JPanel createOverdueFinesPanel() {
         JPanel panel = new JPanel(new BorderLayout());
         overdueFines.setEditable(false);
-        panel.add(new JLabel("Overdue Fines"));
         panel.add(new JScrollPane(overdueFines), BorderLayout.CENTER);
 
         updateOverdueFines(overdueFines);
