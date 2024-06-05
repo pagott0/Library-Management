@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainGUI {
@@ -228,11 +229,25 @@ public class MainGUI {
                 String isbn = isbnField.getText();
                 String category = categoryField.getText();
 
-                library.addBook(new Book(title, author, isbn, category));
-                JOptionPane.showMessageDialog(panel, "Book added successfully!");
+                if (title.isEmpty() || author.isEmpty() || isbn.isEmpty() || category.isEmpty()) {
+                    JOptionPane.showMessageDialog(panel, "All fields are required.");
+                    return;
+                }
+
+                boolean sucessfulAddedBook = library.addBook(new Book(title, author, isbn, category));
+                if(sucessfulAddedBook) {
+                  JOptionPane.showMessageDialog(panel, "Book added successfully!");
+                } else {
+                  JOptionPane.showMessageDialog(panel, "Book with this ISBN already exists.");
+                }
             }
         });
         formPanel.add(addButton, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        gbc.gridwidth = 2;
+        formPanel.add(new JLabel("ISBN must be unique, you can not add a book with a existing ISBN"), gbc);
 
         panel.add(formPanel, BorderLayout.NORTH);
 
@@ -264,31 +279,62 @@ public class MainGUI {
             public void actionPerformed(ActionEvent e) {
                 String query = searchField.getText();
                 String criteria = (String) searchCriteria.getSelectedItem();
+                ArrayList<Book> books = null;
                 Book book = null;
 
                 switch (criteria) {
-                    case "Title":
-                        book = library.searchBookByTitle(query);
-                        break;
-                    case "Author":
-                        book = library.searchBookByAuthor(query);
-                        break;
                     case "ISBN":
                         book = library.searchBookByISBN(query);
                         break;
+                    case "Title":
+                        books = library.searchBookByTitle(query);
+                        break;
+                    case "Author":
+                        books = library.searchBookByAuthor(query);
+                        break;
                     case "Category":
-                        book = library.searchBookByCategory(query);
+                        books = library.searchBookByCategory(query);
                         break;
                 }
 
-                if (book != null) {
-                    searchResults.setText(book.toString());
+                if (criteria != "ISBN" && books != null && books.size() > 0) {
+                  String bookString = "";
+                  for (Book bookItem : books) {
+                    bookString += bookItem.toString() + "\n\n";
+                  }
+                  searchResults.setText(bookString);
+                } else if (criteria == "ISBN" && book != null) {
+                  searchResults.setText(book.toString());
                 } else {
                     searchResults.setText("No results found.");
                 }
             }
         });
         searchPanel.add(searchButton, gbc);
+
+        JButton showAllBooksButton = new JButton("Show all books");
+        showAllBooksButton.addActionListener(new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+              String query = searchField.getText();
+              String criteria = (String) searchCriteria.getSelectedItem();
+              List<Book> books = library.getAllBooks();
+
+              if (books != null && books.size() > 0) {
+                String bookString = "";
+                for (Book bookItem : books) {
+                  bookString += bookItem.toString() + "\n\n";
+                }
+                searchResults.setText(bookString);
+              } else {
+                  searchResults.setText("No results found.");
+              }
+          }
+      });
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 2;
+        searchPanel.add(showAllBooksButton, gbc);
 
         panel.add(searchPanel, BorderLayout.CENTER);
         panel.add(new JScrollPane(searchResults), BorderLayout.SOUTH);
@@ -327,11 +373,24 @@ public class MainGUI {
                 String name = nameField.getText();
                 String contact = contactField.getText();
 
-                library.addPatron(new Patron(name, contact));
-                JOptionPane.showMessageDialog(panel, "Patron added successfully!");
+                if(name.isEmpty() || contact.isEmpty()) {
+                  JOptionPane.showMessageDialog(panel, "Name and contact info cannot be empty.");
+                  return;
+                }
+
+                boolean patronAdded = library.addPatron(new Patron(name, contact));
+                if(patronAdded) {
+                  JOptionPane.showMessageDialog(panel, "Patron added successfully!");
+                } else {
+                  JOptionPane.showMessageDialog(panel, "Patron with this name or contact info already exists.");
+                }
             }
         });
         formPanel.add(addButton, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 2;
+        formPanel.add(new JLabel("Note: Patron with the same name or contact info cannot be added."), gbc);
 
         panel.add(formPanel, BorderLayout.NORTH);
 
@@ -382,6 +441,28 @@ public class MainGUI {
             }
         });
         searchPanel.add(searchButton, gbc);
+
+        JButton showAllPatronsButton = new JButton("Show all patrons");
+        showAllPatronsButton.addActionListener(new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+              List<Patron> patrons = library.getAllPatrons();
+
+              if (patrons != null && patrons.size() > 0) {
+                String patronString = "";
+                for (Patron patronItem : patrons) {
+                  patronString += patronItem.toString() + "\n\n";
+                }
+                searchResults.setText(patronString);
+              } else {
+                  searchResults.setText("No results found.");
+              }
+          }
+      });
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 2;
+        searchPanel.add(showAllPatronsButton, gbc);
 
         panel.add(searchPanel, BorderLayout.CENTER);
         panel.add(new JScrollPane(searchResults), BorderLayout.SOUTH);

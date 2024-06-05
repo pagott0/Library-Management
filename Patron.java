@@ -28,9 +28,7 @@ public class Patron implements Serializable {
 
   @Override
   public String toString() {
-      return "Patron{" +
-              "name='" + name + '\'' +
-              ", contactInfo='" + contactInfo + '\'' +
-              '}';
+      return "Patron: " + name + " | Contact Info: " + contactInfo;
   }
+
 }

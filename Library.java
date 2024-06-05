@@ -26,6 +26,14 @@ public class Library implements Serializable {
     return loans;
   }
 
+  public List<Book> getAllBooks() {
+    return books;
+  }
+
+  public List<Patron> getAllPatrons() {
+    return patrons;
+  }
+
   public User authenticateUser(String username, String password) {
       for (User user : users) {
           if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
@@ -74,8 +82,14 @@ public void loadUsersFromFile(String filename) {
 }
 
     // Book Management
-    public void addBook(Book book) {
+    public boolean addBook(Book book) {
+      for(Book b : books) {
+          if(b.getISBN().equals(book.getISBN())) {
+              return false;
+          }
+      }
         books.add(book);
+        return true;
     }
 
     public void saveBooksToFile(String filename) {
@@ -148,22 +162,24 @@ public void loadLoansFromFile(String filename) {
         books.removeIf(book -> book.getISBN().equals(ISBN));
     }
 
-    public Book searchBookByTitle(String title) {
+    public ArrayList<Book> searchBookByTitle(String title) {
+        ArrayList<Book> booksList = new ArrayList<Book>();
         for (Book book : books) {
             if (book.getTitle().equalsIgnoreCase(title)) {
-                return book;
+                booksList.add(book);
             }
         }
-        return null;
+        return booksList;
     }
 
-    public Book searchBookByAuthor(String author) {
+    public ArrayList<Book> searchBookByAuthor(String author) {
+        ArrayList<Book> booksList = new ArrayList<Book>();
         for (Book book : books) {
             if (book.getAuthor().equalsIgnoreCase(author)) {
-                return book;
+                booksList.add(book);
             }
         }
-        return null;
+        return booksList;
     }
 
     public Book searchBookByISBN(String ISBN) {
@@ -175,18 +191,25 @@ public void loadLoansFromFile(String filename) {
         return null;
     }
 
-    public Book searchBookByCategory(String category) {
+    public ArrayList<Book> searchBookByCategory(String category) {
+        ArrayList<Book> booksList = new ArrayList<Book>();
         for (Book book : books) {
             if (book.getCategory().equalsIgnoreCase(category)) {
-                return book;
+                booksList.add(book);
             }
         }
-        return null;
+        return booksList;
     }
 
     // Patron Management
-    public void addPatron(Patron patron) {
+    public boolean addPatron(Patron patron) {
+        for (Patron p : patrons) {
+            if (p.getName().equalsIgnoreCase(patron.getName()) || p.getContactInfo().equalsIgnoreCase(patron.getContactInfo())) {
+                return false;
+            }
+        }
         patrons.add(patron);
+        return true;
     }
 
     public void editPatron(String name, String newName, String newContactInfo) {
