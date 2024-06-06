@@ -191,14 +191,55 @@ public class MainGUI {
 
     JTextArea overdueFines = new JTextArea(10, 50); // fora do método createOverdueFinesPanel para conseguir atualizar nos check outs e check ins na pág loans usando o método updateOverdueFines
     private JPanel createOverdueFinesPanel() {
-        JPanel panel = new JPanel(new BorderLayout());
-        overdueFines.setEditable(false);
-        panel.add(new JScrollPane(overdueFines), BorderLayout.CENTER);
+      JPanel panel = new JPanel(new BorderLayout());
+      overdueFines.setEditable(false);
+      
+  
+      // Input field and button
+      JPanel inputPanel = new JPanel(new FlowLayout());
+      JLabel idLabel = new JLabel("ID:");
+      JTextField idField = new JTextField(10);
+      JButton setAsPaidButton = new JButton("Set as Paid");
+  
+      setAsPaidButton.addActionListener(new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+              String id = idField.getText();
 
-        updateOverdueFines(overdueFines);
+              if(id.isEmpty()) {
+                  JOptionPane.showMessageDialog(panel, "ID required to set fine as paid.");
+                  return;
+              }
 
-        return panel;
-    }
+              try {
+                  int numberId = Integer.parseInt(id);
+                  boolean deleted = library.deleteOverdueFine(numberId);
+                  if(deleted) {
+                      updateOverdueFines(overdueFines);
+                      JOptionPane.showMessageDialog(panel, "Fine marked as paid successfully!");
+                  } else {
+                      JOptionPane.showMessageDialog(panel, "Fine with this ID does not exist.");
+                  }
+              } catch (Exception exception) {
+                  JOptionPane.showMessageDialog(panel, "ID must be a number.");
+                  return;
+              }
+
+          }
+      });
+  
+      inputPanel.add(idLabel);
+      inputPanel.add(idField);
+      inputPanel.add(setAsPaidButton);
+  
+      panel.add(inputPanel, BorderLayout.NORTH);
+      panel.add(new JScrollPane(overdueFines), BorderLayout.CENTER);
+  
+      // Atualizar a exibição das multas vencidas
+      updateOverdueFines(overdueFines);
+  
+      return panel;
+  }
 
     private JPanel createBookPanel() {
       JPanel panel = new JPanel();
@@ -818,11 +859,13 @@ public class MainGUI {
   private void updateOverdueFines(JTextArea overdueFines) {
       List<Loan> loans = library.getAllLoans();
       StringBuilder sb = new StringBuilder();
+      int id = 0;
       for (Loan loan : loans) {
           if (loan.isOverdue()) {
+              id++;
               Book book = loan.getBook();
               Patron patron = loan.getPatron();
-              sb.append("Book: ").append(book.getTitle()).append(" | Author: ").append(book.getAuthor()).append(" | ISBN: ").append(book.getISBN()).append(" | Patron: ").append(patron.getName()).append(" | Contact Info: ").append(patron.getContactInfo()).append(" | Due Date: ").append(loan.getDueDate()).append(" | Return Date: ").append(loan.getReturnDate()).append(" | Fine: $").append(loan.getFine()).append("\n\n");
+              sb.append("ID: ").append(id).append(" | Book: ").append(book.getTitle()).append(" | Author: ").append(book.getAuthor()).append(" | ISBN: ").append(book.getISBN()).append(" | Patron: ").append(patron.getName()).append(" | Contact Info: ").append(patron.getContactInfo()).append(" | Due Date: ").append(loan.getDueDate()).append(" | Return Date: ").append(loan.getReturnDate()).append(" | Fine: $").append(loan.getFine()).append("\n\n");
           }
       }
       overdueFines.setText(sb.toString());

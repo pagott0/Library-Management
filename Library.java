@@ -363,4 +363,18 @@ public boolean deletePatron(String name, String contactInfo) {
         long loanTime = loan.getLoanDate().getTime();
         return currentTime - loanTime > loanPeriod;
     }
+
+    public boolean deleteOverdueFine(int id) {
+        int count = 0;
+        for (Loan loan : loans) {
+          if(loan.isOverdue()) {
+            count++;
+            if (count == id) {
+                loan.setReturnDate(loan.getDueDate()); // Set return date to the due date, so it wont be overdue anymore.
+                return true;
+            }
+          }
+        }
+        return false;
+    }
 }
