@@ -201,164 +201,298 @@ public class MainGUI {
     }
 
     private JPanel createBookPanel() {
-        JPanel panel = new JPanel(new BorderLayout());
-        JPanel formPanel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(5, 5, 5, 5);
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-
-        formPanel.add(new JLabel("Title:"), gbc);
-        gbc.gridx = 1;
-        JTextField titleField = new JTextField(20);
-        formPanel.add(titleField, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        formPanel.add(new JLabel("Author:"), gbc);
-        gbc.gridx = 1;
-        JTextField authorField = new JTextField(20);
-        formPanel.add(authorField, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        formPanel.add(new JLabel("ISBN:"), gbc);
-        gbc.gridx = 1;
-        JTextField isbnField = new JTextField(20);
-        formPanel.add(isbnField, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        formPanel.add(new JLabel("Category:"), gbc);
-        gbc.gridx = 1;
-        JTextField categoryField = new JTextField(20);
-        formPanel.add(categoryField, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        gbc.gridwidth = 2;
-        JButton addButton = new JButton("Add Book");
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String title = titleField.getText();
-                String author = authorField.getText();
-                String isbn = isbnField.getText();
-                String category = categoryField.getText();
-
-                if (title.isEmpty() || author.isEmpty() || isbn.isEmpty() || category.isEmpty()) {
-                    JOptionPane.showMessageDialog(panel, "All fields are required.");
-                    return;
-                }
-
-                boolean sucessfulAddedBook = library.addBook(new Book(title, author, isbn, category));
-                if(sucessfulAddedBook) {
+      JPanel panel = new JPanel();
+      panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+  
+      // Panel for adding books
+      JPanel formPanel = new JPanel(new GridBagLayout());
+      GridBagConstraints gbc = new GridBagConstraints();
+      gbc.fill = GridBagConstraints.HORIZONTAL;
+      gbc.insets = new Insets(5, 5, 5, 5);
+      gbc.gridx = 0;
+      gbc.gridy = 0;
+  
+      formPanel.add(new JLabel("Title:"), gbc);
+      gbc.gridx = 1;
+      JTextField titleField = new JTextField(20);
+      formPanel.add(titleField, gbc);
+  
+      gbc.gridx = 0;
+      gbc.gridy = 1;
+      formPanel.add(new JLabel("Author:"), gbc);
+      gbc.gridx = 1;
+      JTextField authorField = new JTextField(20);
+      formPanel.add(authorField, gbc);
+  
+      gbc.gridx = 0;
+      gbc.gridy = 2;
+      formPanel.add(new JLabel("ISBN:"), gbc);
+      gbc.gridx = 1;
+      JTextField isbnField = new JTextField(20);
+      formPanel.add(isbnField, gbc);
+  
+      gbc.gridx = 0;
+      gbc.gridy = 3;
+      formPanel.add(new JLabel("Category:"), gbc);
+      gbc.gridx = 1;
+      JTextField categoryField = new JTextField(20);
+      formPanel.add(categoryField, gbc);
+  
+      gbc.gridx = 0;
+      gbc.gridy = 4;
+      gbc.gridwidth = 2;
+      JButton addButton = new JButton("Add Book");
+      addButton.addActionListener(new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+              String title = titleField.getText();
+              String author = authorField.getText();
+              String isbn = isbnField.getText();
+              String category = categoryField.getText();
+  
+              if (title.isEmpty() || author.isEmpty() || isbn.isEmpty() || category.isEmpty()) {
+                  JOptionPane.showMessageDialog(panel, "All fields are required.");
+                  return;
+              }
+  
+              boolean successfulAddedBook = library.addBook(new Book(title, author, isbn, category));
+              if (successfulAddedBook) {
                   JOptionPane.showMessageDialog(panel, "Book added successfully!");
-                } else {
+              } else {
                   JOptionPane.showMessageDialog(panel, "Book with this ISBN already exists.");
-                }
+              }
+          }
+      });
+      formPanel.add(addButton, gbc);
+  
+      gbc.gridx = 0;
+      gbc.gridy = 5;
+      gbc.gridwidth = 2;
+      formPanel.add(new JLabel("ISBN must be unique, you cannot add a book with an existing ISBN"), gbc);
+  
+      panel.add(formPanel);
+  
+      // Add spacing between panels
+      panel.add(Box.createVerticalStrut(20));  // Add 20 pixels of vertical space
+  
+      // Panel for deleting books
+      JPanel deletePanel = new JPanel(new GridBagLayout());
+      gbc.gridx = 0;
+      gbc.gridy = 0;
+      gbc.gridwidth = 1;
+  
+      deletePanel.add(new JLabel("ISBN:"), gbc);
+      gbc.gridx = 1;
+      JTextField isbnToDeleteField = new JTextField(20);
+      deletePanel.add(isbnToDeleteField, gbc);
+  
+      gbc.gridx = 0;
+      gbc.gridy = 2;
+      gbc.gridwidth = 2;
+      JButton deleteButton = new JButton("Delete Book");
+      deleteButton.addActionListener(new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+              String isbn = isbnToDeleteField.getText();
+  
+              if (isbn.isEmpty()) {
+                  JOptionPane.showMessageDialog(panel, "ISBN required to delete book.");
+                  return;
+              }
+  
+              boolean successfulDeletedBook = library.deleteBook(isbn);
+              if (successfulDeletedBook) {
+                  JOptionPane.showMessageDialog(panel, "Book deleted successfully!");
+              } else {
+                  JOptionPane.showMessageDialog(panel, "Book with this ISBN does not exist.");
+              }
+          }
+      });
+      deletePanel.add(deleteButton, gbc);
+
+      gbc.gridx = 0;
+      gbc.gridy = 3;
+      gbc.gridwidth = 2;
+      JButton updateButton = new JButton("Update Book");
+      updateButton.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String isbn = isbnToDeleteField.getText();
+
+            if (isbn.isEmpty()) {
+                JOptionPane.showMessageDialog(panel, "ISBN required to update book.");
+                return;
             }
-        });
-        formPanel.add(addButton, gbc);
 
-        gbc.gridx = 0;
-        gbc.gridy = 5;
-        gbc.gridwidth = 2;
-        formPanel.add(new JLabel("ISBN must be unique, you can not add a book with a existing ISBN"), gbc);
-
-        panel.add(formPanel, BorderLayout.NORTH);
-
-        // Search fields
-        JPanel searchPanel = new JPanel(new GridBagLayout());
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 1;
-        searchPanel.add(new JLabel("Criteria:"), gbc);
-        gbc.gridx = 1;
-        JComboBox<String> searchCriteria = new JComboBox<>(new String[]{"Title", "Author", "ISBN", "Category"});
-        searchPanel.add(searchCriteria, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        searchPanel.add(new JLabel("Search:"), gbc);
-        gbc.gridx = 1;
-        JTextField searchField = new JTextField(20);
-        searchPanel.add(searchField, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.gridwidth = 2;
-        JButton searchButton = new JButton("Search");
-        JTextArea searchResults = new JTextArea(10, 50);
-        searchResults.setEditable(false);
-        searchButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String query = searchField.getText();
-                String criteria = (String) searchCriteria.getSelectedItem();
-                ArrayList<Book> books = null;
-                Book book = null;
-
-                switch (criteria) {
-                    case "ISBN":
-                        book = library.searchBookByISBN(query);
-                        break;
-                    case "Title":
-                        books = library.searchBookByTitle(query);
-                        break;
-                    case "Author":
-                        books = library.searchBookByAuthor(query);
-                        break;
-                    case "Category":
-                        books = library.searchBookByCategory(query);
-                        break;
-                }
-
-                if (criteria != "ISBN" && books != null && books.size() > 0) {
-                  String bookString = "";
-                  for (Book bookItem : books) {
-                    bookString += bookItem.toString() + "\n\n";
-                  }
-                  searchResults.setText(bookString);
-                } else if (criteria == "ISBN" && book != null) {
-                  searchResults.setText(book.toString());
-                } else {
-                    searchResults.setText("No results found.");
-                }
+            Book book = library.searchBookByISBN(isbn);
+            if (book == null) {
+                JOptionPane.showMessageDialog(panel, "Book with this ISBN does not exist.");
+                return;
             }
-        });
-        searchPanel.add(searchButton, gbc);
 
-        JButton showAllBooksButton = new JButton("Show all books");
-        showAllBooksButton.addActionListener(new ActionListener() {
+            // Create a popup dialog for updating the book
+            JDialog updateDialog = new JDialog();
+            updateDialog.setTitle("Update Book");
+            updateDialog.setSize(400, 300);
+            updateDialog.setLayout(new GridBagLayout());
+            GridBagConstraints dialogGbc = new GridBagConstraints();
+            dialogGbc.fill = GridBagConstraints.HORIZONTAL;
+            dialogGbc.insets = new Insets(5, 5, 5, 5);
+
+            dialogGbc.gridx = 0;
+            dialogGbc.gridy = 0;
+            updateDialog.add(new JLabel("Title:"), dialogGbc);
+            dialogGbc.gridx = 1;
+            JTextField updateTitleField = new JTextField(book.getTitle(), 20);
+            updateDialog.add(updateTitleField, dialogGbc);
+
+            dialogGbc.gridx = 0;
+            dialogGbc.gridy = 1;
+            updateDialog.add(new JLabel("Author:"), dialogGbc);
+            dialogGbc.gridx = 1;
+            JTextField updateAuthorField = new JTextField(book.getAuthor(), 20);
+            updateDialog.add(updateAuthorField, dialogGbc);
+
+            dialogGbc.gridx = 0;
+            dialogGbc.gridy = 2;
+            updateDialog.add(new JLabel("Category:"), dialogGbc);
+            dialogGbc.gridx = 1;
+            JTextField updateCategoryField = new JTextField(book.getCategory(), 20);
+            updateDialog.add(updateCategoryField, dialogGbc);
+
+            dialogGbc.gridx = 0;
+            dialogGbc.gridy = 3;
+            dialogGbc.gridwidth = 2;
+            JButton confirmUpdateButton = new JButton("Update");
+            confirmUpdateButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    String newTitle = updateTitleField.getText();
+                    String newAuthor = updateAuthorField.getText();
+                    String newCategory = updateCategoryField.getText();
+
+                    if (newTitle.isEmpty() || newAuthor.isEmpty() || newCategory.isEmpty()) {
+                        JOptionPane.showMessageDialog(updateDialog, "All fields are required.");
+                        return;
+                    }
+
+                    book.setTitle(newTitle);
+                    book.setAuthor(newAuthor);
+                    book.setCategory(newCategory);
+
+                    if (library.updateBook(book)) {
+                        JOptionPane.showMessageDialog(updateDialog, "Book updated successfully!");
+                        updateDialog.dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(updateDialog, "Failed to update book.");
+                    }
+                }
+            });
+            updateDialog.add(confirmUpdateButton, dialogGbc);
+
+            updateDialog.setVisible(true);
+        }
+    });
+      deletePanel.add(updateButton, gbc);
+  
+      panel.add(deletePanel);
+  
+      // Add spacing between panels
+      panel.add(Box.createVerticalStrut(20));  // Add 20 pixels of vertical space
+  
+      // Panel for searching books
+      JPanel searchPanel = new JPanel(new GridBagLayout());
+      gbc.gridx = 0;
+      gbc.gridy = 0;
+      gbc.gridwidth = 1;
+      searchPanel.add(new JLabel("Criteria:"), gbc);
+      gbc.gridx = 1;
+      JComboBox<String> searchCriteria = new JComboBox<>(new String[]{"Title", "Author", "ISBN", "Category"});
+      searchPanel.add(searchCriteria, gbc);
+  
+      gbc.gridx = 0;
+      gbc.gridy = 1;
+      searchPanel.add(new JLabel("Search:"), gbc);
+      gbc.gridx = 1;
+      JTextField searchField = new JTextField(20);
+      searchPanel.add(searchField, gbc);
+  
+      gbc.gridx = 0;
+      gbc.gridy = 2;
+      gbc.gridwidth = 2;
+      JButton searchButton = new JButton("Search Book");
+      JTextArea searchResults = new JTextArea(10, 50);
+      searchResults.setEditable(false);
+      searchButton.addActionListener(new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
               String query = searchField.getText();
               String criteria = (String) searchCriteria.getSelectedItem();
-              List<Book> books = library.getAllBooks();
-
-              if (books != null && books.size() > 0) {
-                String bookString = "";
-                for (Book bookItem : books) {
-                  bookString += bookItem.toString() + "\n\n";
-                }
-                searchResults.setText(bookString);
+              ArrayList<Book> books = null;
+              Book book = null;
+  
+              switch (criteria) {
+                  case "ISBN":
+                      book = library.searchBookByISBN(query);
+                      break;
+                  case "Title":
+                      books = library.searchBookByTitle(query);
+                      break;
+                  case "Author":
+                      books = library.searchBookByAuthor(query);
+                      break;
+                  case "Category":
+                      books = library.searchBookByCategory(query);
+                      break;
+              }
+  
+              if (!"ISBN".equals(criteria) && books != null && books.size() > 0) {
+                  StringBuilder bookString = new StringBuilder();
+                  for (Book bookItem : books) {
+                      bookString.append(bookItem.toString()).append("\n\n");
+                  }
+                  searchResults.setText(bookString.toString());
+              } else if ("ISBN".equals(criteria) && book != null) {
+                  searchResults.setText(book.toString());
               } else {
                   searchResults.setText("No results found.");
               }
           }
       });
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        gbc.gridwidth = 2;
-        searchPanel.add(showAllBooksButton, gbc);
-
-        panel.add(searchPanel, BorderLayout.CENTER);
-        panel.add(new JScrollPane(searchResults), BorderLayout.SOUTH);
-
-        return panel;
-    }
+      searchPanel.add(searchButton, gbc);
+  
+      JButton showAllBooksButton = new JButton("Show all books");
+      showAllBooksButton.addActionListener(new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+              List<Book> books = library.getAllBooks();
+  
+              if (books != null && books.size() > 0) {
+                  StringBuilder bookString = new StringBuilder();
+                  for (Book bookItem : books) {
+                      bookString.append(bookItem.toString()).append("\n\n");
+                  }
+                  searchResults.setText(bookString.toString());
+              } else {
+                  searchResults.setText("No results found.");
+              }
+          }
+      });
+      gbc.gridy = 3;
+      gbc.gridwidth = 2;
+      searchPanel.add(showAllBooksButton, gbc);
+  
+      panel.add(searchPanel);
+  
+      // Add spacing before the search results area
+      panel.add(Box.createVerticalStrut(20));  // Add 20 pixels of vertical space
+  
+      // Search results area
+      panel.add(new JScrollPane(searchResults));
+  
+      return panel;
+  }
+  
 
     private JPanel createPatronPanel() {
         JPanel panel = new JPanel(new BorderLayout());

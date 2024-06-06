@@ -159,9 +159,37 @@ public void loadLoansFromFile(String filename) {
         }
     }
 
-    public void deleteBook(String ISBN) {
-        books.removeIf(book -> book.getISBN().equals(ISBN));
+
+
+    public Book searchBook(String isbn) {
+      for (Book book : books) {
+          if (book.getISBN().equals(isbn)) {
+              return book;
+          }
+      }
+      return null;
+  }
+
+    public boolean deleteBook(String isbn) {
+      Book book = searchBook(isbn);
+      if (book != null) {
+          books.remove(book);
+          return true;
+      }
+      return false;
+  }
+
+  public boolean updateBook(Book updatedBook) {
+    for (Book book : books) {
+        if (book.getISBN().equals(updatedBook.getISBN())) {
+            book.setTitle(updatedBook.getTitle());
+            book.setAuthor(updatedBook.getAuthor());
+            book.setCategory(updatedBook.getCategory());
+            return true;
+        }
     }
+    return false;
+}
 
     public ArrayList<Book> searchBookByTitle(String title) {
         ArrayList<Book> booksList = new ArrayList<Book>();
