@@ -494,133 +494,226 @@ public class MainGUI {
   }
   
 
-    private JPanel createPatronPanel() {
-        JPanel panel = new JPanel(new BorderLayout());
-        JPanel formPanel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(5, 5, 5, 5);
-        gbc.gridx = 0;
-        gbc.gridy = 0;
+  private JPanel createPatronPanel() {
+    JPanel panel = new JPanel();
+    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        formPanel.add(new JLabel("Name:"), gbc);
-        gbc.gridx = 1;
-        JTextField nameField = new JTextField(20);
-        formPanel.add(nameField, gbc);
+    // Panel for adding patrons
+    JPanel formPanel = new JPanel(new GridBagLayout());
+    GridBagConstraints gbc = new GridBagConstraints();
+    gbc.fill = GridBagConstraints.HORIZONTAL;
+    gbc.insets = new Insets(5, 5, 5, 5);
+    gbc.gridx = 0;
+    gbc.gridy = 0;
 
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        formPanel.add(new JLabel("Contact:"), gbc);
-        gbc.gridx = 1;
-        JTextField contactField = new JTextField(20);
-        formPanel.add(contactField, gbc);
+    formPanel.add(new JLabel("Name:"), gbc);
+    gbc.gridx = 1;
+    JTextField nameField = new JTextField(20);
+    formPanel.add(nameField, gbc);
 
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.gridwidth = 2;
-        JButton addButton = new JButton("Add Patron");
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String name = nameField.getText();
-                String contact = contactField.getText();
+    gbc.gridx = 0;
+    gbc.gridy = 1;
+    formPanel.add(new JLabel("Contact:"), gbc);
+    gbc.gridx = 1;
+    JTextField contactField = new JTextField(20);
+    formPanel.add(contactField, gbc);
 
-                if(name.isEmpty() || contact.isEmpty()) {
-                  JOptionPane.showMessageDialog(panel, "Name and contact info cannot be empty.");
-                  return;
-                }
+    gbc.gridx = 0;
+    gbc.gridy = 2;
+    gbc.gridwidth = 2;
+    JButton addButton = new JButton("Add Patron");
+    addButton.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String name = nameField.getText();
+            String contact = contactField.getText();
 
-                boolean patronAdded = library.addPatron(new Patron(name, contact));
-                if(patronAdded) {
-                  JOptionPane.showMessageDialog(panel, "Patron added successfully!");
-                } else {
-                  JOptionPane.showMessageDialog(panel, "Patron with this name or contact info already exists.");
-                }
+            if(name.isEmpty() || contact.isEmpty()) {
+                JOptionPane.showMessageDialog(panel, "Name and contact info cannot be empty.");
+                return;
             }
-        });
-        formPanel.add(addButton, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        gbc.gridwidth = 2;
-        formPanel.add(new JLabel("Note: Patron with the same name or contact info cannot be added."), gbc);
 
-        panel.add(formPanel, BorderLayout.NORTH);
-
-        // Search fields
-        JPanel searchPanel = new JPanel(new GridBagLayout());
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 1;
-        searchPanel.add(new JLabel("Criteria:"), gbc);
-        gbc.gridx = 1;
-        JComboBox<String> searchCriteria = new JComboBox<>(new String[]{"Name", "Contact Information"});
-        searchPanel.add(searchCriteria, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        searchPanel.add(new JLabel("Search:"), gbc);
-        gbc.gridx = 1;
-        JTextField searchField = new JTextField(20);
-        searchPanel.add(searchField, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.gridwidth = 2;
-        JButton searchButton = new JButton("Search");
-        JTextArea searchResults = new JTextArea(10, 50);
-        searchResults.setEditable(false);
-        searchButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String query = searchField.getText();
-                String criteria = (String) searchCriteria.getSelectedItem();
-                Patron patron = null;
-
-                switch (criteria) {
-                    case "Name":
-                        patron = library.searchPatronByName(query);
-                        break;
-                    case "Contact Information":
-                        patron = library.searchPatronByContactInfo(query);
-                        break;
-                }
-
-                if (patron != null) {
-                    searchResults.setText(patron.toString());
-                } else {
-                    searchResults.setText("No results found.");
-                }
+            boolean patronAdded = library.addPatron(new Patron(name, contact));
+            if(patronAdded) {
+                JOptionPane.showMessageDialog(panel, "Patron added successfully!");
+            } else {
+                JOptionPane.showMessageDialog(panel, "Patron with this name or contact info already exists.");
             }
-        });
-        searchPanel.add(searchButton, gbc);
+        }
+    });
+    formPanel.add(addButton, gbc);
+    gbc.gridx = 0;
+    gbc.gridy = 3;
+    gbc.gridwidth = 2;
+    formPanel.add(new JLabel("Note: Patron with the same name or contact info cannot be added."), gbc);
 
-        JButton showAllPatronsButton = new JButton("Show all patrons");
-        showAllPatronsButton.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-              List<Patron> patrons = library.getAllPatrons();
+    panel.add(formPanel);
 
-              if (patrons != null && patrons.size() > 0) {
-                String patronString = "";
-                for (Patron patronItem : patrons) {
-                  patronString += patronItem.toString() + "\n\n";
-                }
-                searchResults.setText(patronString);
-              } else {
-                  searchResults.setText("No results found.");
-              }
+    // Add spacing between panels
+    panel.add(Box.createVerticalStrut(20));  // Add 20 pixels of vertical space
+
+    // Panel for deleting and updating patrons
+    JPanel actionPanel = new JPanel(new GridBagLayout());
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    gbc.gridwidth = 1;
+
+    actionPanel.add(new JLabel("Name:"), gbc);
+    gbc.gridx = 1;
+    JTextField nameToDeleteField = new JTextField(20);
+    actionPanel.add(nameToDeleteField, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy = 1;
+    actionPanel.add(new JLabel("Contact:"), gbc);
+    gbc.gridx = 1;
+    JTextField contactInfoToDeleteField = new JTextField(20);
+    actionPanel.add(contactInfoToDeleteField, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy = 2;
+    gbc.gridwidth = 2;
+    JButton deleteButton = new JButton("Delete Patron");
+    deleteButton.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String name = nameToDeleteField.getText();
+            String contact = contactInfoToDeleteField.getText();
+            if(name.isEmpty() || contact.isEmpty()) {
+                JOptionPane.showMessageDialog(panel, "Name and contact info required to delete patron.");
+                return;
+            }
+            boolean deleted = library.deletePatron(name, contact);
+            if(deleted) {
+                JOptionPane.showMessageDialog(panel, "Patron deleted successfully!");
+            } else {
+                JOptionPane.showMessageDialog(panel, "Patron with this name and contact info does not exist.");
+            }
+        }
+    });
+    actionPanel.add(deleteButton, gbc);
+
+    gbc.gridy = 3;
+    JButton updateButton = new JButton("Update Patron");
+    updateButton.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String name = nameToDeleteField.getText();
+            String contact = contactInfoToDeleteField.getText();
+            if(name.isEmpty() || contact.isEmpty()) {
+                JOptionPane.showMessageDialog(panel, "Name and contact info required to update patron.");
+                return;
+            }
+            Patron patron = library.searchPatron(name, contact);
+            if(patron == null) {
+                JOptionPane.showMessageDialog(panel, "Patron with this name and contact info does not exist.");
+                return;
+            }
+            String newName = JOptionPane.showInputDialog(panel, "Enter new name (leave blank to keep same):", patron.getName());
+            String newContact = JOptionPane.showInputDialog(panel, "Enter new contact (leave blank to keep same):", patron.getContactInfo());
+            if(newName == null || newContact == null) {
+                // User canceled the input
+                return;
+            }
+            if(newName.isEmpty() && newContact.isEmpty()) {
+                JOptionPane.showMessageDialog(panel, "Both name and contact cannot be blank.");
+                return;
+            }
+            if(!newName.isEmpty()) {
+                patron.setName(newName);
+            }
+            if(!newContact.isEmpty()) {
+                patron.setContactInfo(newContact);
+            }
+            JOptionPane.showMessageDialog(panel, "Patron updated successfully!");
+        }
+    });
+    actionPanel.add(updateButton, gbc);
+
+    panel.add(actionPanel);
+
+    // Add spacing before the search results area
+    panel.add(Box.createVerticalStrut(20));  // Add 20 pixels of vertical space
+
+    // Search fields
+    JPanel searchPanel = new JPanel(new GridBagLayout());
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    gbc.gridwidth = 1;
+    searchPanel.add(new JLabel("Criteria:"), gbc);
+    gbc.gridx = 1;
+    JComboBox<String> searchCriteria = new JComboBox<>(new String[]{"Name", "Contact Information"});
+    searchPanel.add(searchCriteria, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy = 1;
+    searchPanel.add(new JLabel("Search:"), gbc);
+    gbc.gridx = 1;
+    JTextField searchField = new JTextField(20);
+    searchPanel.add(searchField, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy = 2;
+    gbc.gridwidth = 2;
+    JButton searchButton = new JButton("Search");
+    JTextArea searchResults = new JTextArea(10, 50);
+    searchResults.setEditable(false);
+    searchButton.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String query = searchField.getText();
+            String criteria = (String) searchCriteria.getSelectedItem();
+            Patron patron = null;
+
+            switch (criteria) {
+                case "Name":
+                    patron = library.searchPatronByName(query);
+                    break;
+                case "Contact Information":
+                    patron = library.searchPatronByContactInfo(query);
+                    break;
+            }
+
+            if (patron != null) {
+                searchResults.setText(patron.toString());
+            } else {
+                searchResults.setText("No results found.");
+            }
+        }
+    });
+    searchPanel.add(searchButton, gbc);
+
+    JButton showAllPatronsButton = new JButton("Show all patrons");
+    showAllPatronsButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+          List<Patron> patrons = library.getAllPatrons();
+
+          if (patrons != null && patrons.size() > 0) {
+            String patronString = "";
+            for (Patron patronItem : patrons) {
+              patronString += patronItem.toString() + "\n\n";
+            }
+            searchResults.setText(patronString);
+          } else {
+              searchResults.setText("No results found.");
           }
-      });
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        gbc.gridwidth = 2;
-        searchPanel.add(showAllPatronsButton, gbc);
+      }
+  });
+    gbc.gridx = 0;
+    gbc.gridy = 3;
+    gbc.gridwidth = 2;
+    searchPanel.add(showAllPatronsButton, gbc);
 
-        panel.add(searchPanel, BorderLayout.CENTER);
-        panel.add(new JScrollPane(searchResults), BorderLayout.SOUTH);
+    panel.add(searchPanel);
 
-        return panel;
-    }
+    // Search results area
+    searchResults.setEditable(false);
+    panel.add(new JScrollPane(searchResults));
+
+    return panel;
+}
+
 
     private JPanel createLoanPanel() {
         JPanel panel = new JPanel(new BorderLayout());

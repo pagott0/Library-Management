@@ -179,6 +179,24 @@ public void loadLoansFromFile(String filename) {
       return false;
   }
 
+  public Patron searchPatron(String name, String contactInfo) {
+    for (Patron patron : patrons) {
+        if (patron.getName().equals(name) && patron.getContactInfo().equals(contactInfo)) {
+            return patron;
+        }
+    }
+    return null;
+}
+
+public boolean deletePatron(String name, String contactInfo) {
+  Patron patron = searchPatron(name, contactInfo);
+  if (patron != null) {
+      patrons.remove(patron);
+      return true;
+  }
+  return false;
+}
+
   public boolean updateBook(Book updatedBook) {
     for (Book book : books) {
         if (book.getISBN().equals(updatedBook.getISBN())) {
@@ -251,9 +269,9 @@ public void loadLoansFromFile(String filename) {
         }
     }
 
-    public void deletePatron(String name) {
+    /* public void deletePatron(String name) {
         patrons.removeIf(patron -> patron.getName().equalsIgnoreCase(name));
-    }
+    } */
 
     public Patron searchPatronByName(String name) {
         for (Patron patron : patrons) {
