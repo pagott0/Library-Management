@@ -3,10 +3,12 @@ import java.io.Serializable;
 public class Patron implements Serializable {
   private String name;
   private String contactInfo;
+  private String userDataOwner;
 
-  public Patron(String name, String contactInfo) {
+  public Patron(String name, String contactInfo, String userDataOwner) {
       this.name = name;
       this.contactInfo = contactInfo;
+      this.userDataOwner = userDataOwner;
   }
 
   // Getters and Setters
@@ -24,6 +26,14 @@ public class Patron implements Serializable {
 
   public void setContactInfo(String contactInfo) {
       this.contactInfo = contactInfo;
+  }
+
+  public String getUserDataOwner() {
+      return userDataOwner;
+  }
+
+  public void setUserDataOwner(String userDataOwner) {
+      this.userDataOwner = userDataOwner;
   }
 
   @Override

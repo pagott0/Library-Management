@@ -252,7 +252,7 @@ public class MainGUI {
       gbc.insets = new Insets(5, 5, 5, 5);
       gbc.gridx = 0;
       gbc.gridy = 0;
-  
+
       formPanel.add(new JLabel("Title:"), gbc);
       gbc.gridx = 1;
       JTextField titleField = new JTextField(20);
@@ -296,7 +296,7 @@ public class MainGUI {
                   return;
               }
   
-              boolean successfulAddedBook = library.addBook(new Book(title, author, isbn, category));
+              boolean successfulAddedBook = library.addBook(new Book(title, author, isbn, category, currentUser.getUsername()));
               if (successfulAddedBook) {
                   JOptionPane.showMessageDialog(panel, "Book added successfully!");
               } else {
@@ -490,7 +490,7 @@ public class MainGUI {
               if (!"ISBN".equals(criteria) && books != null && books.size() > 0) {
                   StringBuilder bookString = new StringBuilder();
                   for (Book bookItem : books) {
-                      bookString.append(bookItem.toString()).append("\n\n");
+                      bookString.append("LIBRARIAN : ").append(bookItem.getUserDataOwner()).append(" || ").append(bookItem.toString()).append("\n\n");
                   }
                   searchResults.setText(bookString.toString());
               } else if ("ISBN".equals(criteria) && book != null) {
@@ -506,12 +506,12 @@ public class MainGUI {
       showAllBooksButton.addActionListener(new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-              List<Book> books = library.getAllBooks();
+              List<Book> books = library.getAllBooks(currentUser);
   
               if (books != null && books.size() > 0) {
                   StringBuilder bookString = new StringBuilder();
                   for (Book bookItem : books) {
-                      bookString.append(bookItem.toString()).append("\n\n");
+                      bookString.append("LIBRARIAN : ").append(bookItem.getUserDataOwner()).append(" || ").append(bookItem.toString()).append("\n\n");
                   }
                   searchResults.setText(bookString.toString());
               } else {
@@ -574,7 +574,7 @@ public class MainGUI {
                 return;
             }
 
-            boolean patronAdded = library.addPatron(new Patron(name, contact));
+            boolean patronAdded = library.addPatron(new Patron(name, contact, currentUser.getUsername()));
             if(patronAdded) {
                 JOptionPane.showMessageDialog(panel, "Patron added successfully!");
             } else {
@@ -716,7 +716,8 @@ public class MainGUI {
             }
 
             if (patron != null) {
-                searchResults.setText(patron.toString());
+                String patronString = "LIBRARIAN : " + patron.getUserDataOwner() + " || " + patron.toString();
+                searchResults.setText(patronString);
             } else {
                 searchResults.setText("No results found.");
             }
@@ -728,12 +729,12 @@ public class MainGUI {
     showAllPatronsButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-          List<Patron> patrons = library.getAllPatrons();
+          List<Patron> patrons = library.getAllPatrons(currentUser);
 
           if (patrons != null && patrons.size() > 0) {
             String patronString = "";
             for (Patron patronItem : patrons) {
-              patronString += patronItem.toString() + "\n\n";
+              patronString += "LIBRARIAN : " + patronItem.getUserDataOwner() + " || " + patronItem.toString() + "\n\n";
             }
             searchResults.setText(patronString);
           } else {
@@ -799,7 +800,7 @@ public class MainGUI {
 
                 try {
                     Date dueDate = sdf.parse(dueDateStr);
-                    if (library.checkOutBookWithReturn(isbn, patronId, dueDate)) {
+                    if (library.checkOutBookWithReturn(isbn, patronId, dueDate, currentUser.getUsername())) {
                         JOptionPane.showMessageDialog(panel, "Book checked out successfully!");
                         updateActiveLoans(activeLoans);
                         updateOverdueFines(overdueFines);
@@ -819,8 +820,9 @@ public class MainGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String isbn = isbnField.getText();
+                String patronId = patronIdField.getText();
 
-                if (library.checkInBookWithReturn(isbn)) {
+                if (library.checkInBookWithReturn(isbn, patronId)) {
                     JOptionPane.showMessageDialog(panel, "Book checked in successfully!");
                     updateActiveLoans(activeLoans);
                     updateOverdueFines(overdueFines);
@@ -844,20 +846,20 @@ public class MainGUI {
     }
 
     private void updateActiveLoans(JTextArea activeLoans) {
-      List<Loan> loans = library.getAllLoans();
+      List<Loan> loans = library.getAllLoans(currentUser);
       StringBuilder sb = new StringBuilder();
       for (Loan loan : loans) {
           if (!loan.isReturned()) {
               Book book = loan.getBook();
               Patron patron = loan.getPatron();
-              sb.append("Book: ").append(book.getTitle()).append(" | Author: ").append(book.getAuthor()).append(" | ISBN: ").append(book.getISBN()).append(" | Patron: ").append(patron.getName()).append(" | Contact Info: ").append(patron.getContactInfo()).append(" | Loan Emission Date: ").append(loan.getLoanDate()).append(" | Due Date: ").append(loan.getDueDate()).append("\n\n");
+              sb.append("LIBRARIAN: ").append(loan.getUserDataOwner()).append(" || ").append("Book: ").append(book.getTitle()).append(" | Author: ").append(book.getAuthor()).append(" | ISBN: ").append(book.getISBN()).append(" | Patron: ").append(patron.getName()).append(" | Contact Info: ").append(patron.getContactInfo()).append(" | Loan Emission Date: ").append(loan.getLoanDate()).append(" | Due Date: ").append(loan.getDueDate()).append("\n\n");
           }
       }
       activeLoans.setText(sb.toString());
   }
 
   private void updateOverdueFines(JTextArea overdueFines) {
-      List<Loan> loans = library.getAllLoans();
+      List<Loan> loans = library.getAllLoans(currentUser);
       StringBuilder sb = new StringBuilder();
       int id = 0;
       for (Loan loan : loans) {
@@ -865,7 +867,7 @@ public class MainGUI {
               id++;
               Book book = loan.getBook();
               Patron patron = loan.getPatron();
-              sb.append("ID: ").append(id).append(" | Book: ").append(book.getTitle()).append(" | Author: ").append(book.getAuthor()).append(" | ISBN: ").append(book.getISBN()).append(" | Patron: ").append(patron.getName()).append(" | Contact Info: ").append(patron.getContactInfo()).append(" | Due Date: ").append(loan.getDueDate()).append(" | Return Date: ").append(loan.getReturnDate()).append(" | Fine: $").append(loan.getFine()).append("\n\n");
+              sb.append("ID: ").append(id).append(" | LIBRARIAN: ").append(loan.getUserDataOwner()).append(" || ").append(" | Book: ").append(book.getTitle()).append(" | Author: ").append(book.getAuthor()).append(" | ISBN: ").append(book.getISBN()).append(" | Patron: ").append(patron.getName()).append(" | Contact Info: ").append(patron.getContactInfo()).append(" | Due Date: ").append(loan.getDueDate()).append(" | Return Date: ").append(loan.getReturnDate()).append(" | Fine: $").append(loan.getFine()).append("\n\n");
           }
       }
       overdueFines.setText(sb.toString());

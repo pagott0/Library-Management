@@ -9,13 +9,15 @@ public class Loan implements Serializable {
     private Date dueDate;
     private static final double FINE_AMOUNT = 100.0;
     private boolean isReturned;
+    private String userDataOwner;
 
-    public Loan(Book book, Patron patron, Date loanDate, Date dueDate) {
+    public Loan(Book book, Patron patron, Date loanDate, Date dueDate, String userDataOwner) {
         this.book = book;
         this.patron = patron;
         this.loanDate = loanDate;
         this.isReturned = false;
         this.dueDate = dueDate;
+        this.userDataOwner = userDataOwner;
     }
 
     // Getters and Setters
@@ -77,6 +79,14 @@ public double getFine() {
       return FINE_AMOUNT;
   }
   return 0;
+}
+
+public String getUserDataOwner() {
+    return userDataOwner;
+}
+
+public void setUserDataOwner(String userDataOwner) {
+    this.userDataOwner = userDataOwner;
 }
 
 

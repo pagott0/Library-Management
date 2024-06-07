@@ -7,13 +7,15 @@ public class Book implements Serializable {
   private String ISBN;
   private String category;
   private boolean isAvailable;
+  private String userDataOwner;
 
-  public Book(String title, String author, String ISBN, String category) {
+  public Book(String title, String author, String ISBN, String category, String userDataOwner) {
       this.title = title;
       this.author = author;
       this.ISBN = ISBN;
       this.category = category;
       this.isAvailable = true;
+      this.userDataOwner = userDataOwner;
   }
 
   // Getters and Setters
@@ -56,6 +58,14 @@ public class Book implements Serializable {
   public void setAvailable(boolean available) {
       isAvailable = available;
   }
+
+  public String getUserDataOwner() {
+        return userDataOwner;
+    }
+
+    public void setUserDataOwner(String userDataOwner) {
+        this.userDataOwner = userDataOwner;
+    }
 
   @Override
   public String toString() {

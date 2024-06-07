@@ -22,6 +22,7 @@ public class User implements Serializable {
     public String getRole() {
         return role;
     }
+    
 
     @Override
     public String toString() {

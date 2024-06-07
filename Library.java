@@ -23,16 +23,46 @@ public class Library implements Serializable {
       users.add(user);
   }
 
-  public List<Loan> getAllLoans() {
-    return loans;
+  public List<Loan> getAllLoans(User currentUser) {
+    if(currentUser.getRole().equals("admin")) {
+      return loans;
+    } else {
+      List<Loan> userLoans = new ArrayList<>();
+      for (Loan loan : loans) {
+          if (loan.getUserDataOwner().equals(currentUser.getUsername())) {
+              userLoans.add(loan);
+          }
+      }
+      return userLoans;
+    }
   }
 
-  public List<Book> getAllBooks() {
-    return books;
+  public List<Book> getAllBooks(User currentUser) {
+    if(currentUser.getRole().equals("admin")) {
+      return books;
+    } else {
+      List<Book> userBooks = new ArrayList<>();
+      for (Book book : books) {
+          if (book.getUserDataOwner().equals(currentUser.getUsername())) {
+              userBooks.add(book);
+          }
+      }
+      return userBooks;
+    }
   }
 
-  public List<Patron> getAllPatrons() {
-    return patrons;
+  public List<Patron> getAllPatrons(User currentUser) {
+    if(currentUser.getRole().equals("admin")) {
+      return patrons;
+    } else {
+      List<Patron> userPatrons = new ArrayList<>();
+      for (Patron patron : patrons) {
+          if (patron.getUserDataOwner().equals(currentUser.getUsername())) {
+              userPatrons.add(patron);
+          }
+      }
+      return userPatrons;
+    }
   }
 
   public User authenticateUser(String username, String password) {
@@ -85,7 +115,7 @@ public void loadUsersFromFile(String filename) {
     // Book Management
     public boolean addBook(Book book) {
       for(Book b : books) {
-          if(b.getISBN().equals(book.getISBN())) {
+          if(b.getISBN().equals(book.getISBN()) && (loggedInUser.getRole().equals("admin") || b.getUserDataOwner().equals(loggedInUser.getUsername()))) {
               return false;
           }
       }
@@ -150,7 +180,7 @@ public void loadLoansFromFile(String filename) {
 
     public void editBook(String ISBN, String title, String author, String category) {
         for (Book book : books) {
-            if (book.getISBN().equals(ISBN)) {
+            if (book.getISBN().equals(ISBN) && (loggedInUser.getRole().equals("admin") || book.getUserDataOwner().equals(loggedInUser.getUsername()))) {
                 book.setTitle(title);
                 book.setAuthor(author);
                 book.setCategory(category);
@@ -163,7 +193,7 @@ public void loadLoansFromFile(String filename) {
 
     public Book searchBook(String isbn) {
       for (Book book : books) {
-          if (book.getISBN().equals(isbn)) {
+          if (book.getISBN().equals(isbn) && (loggedInUser.getRole().equals("admin") || book.getUserDataOwner().equals(loggedInUser.getUsername()))) {
               return book;
           }
       }
@@ -181,7 +211,7 @@ public void loadLoansFromFile(String filename) {
 
   public Patron searchPatron(String name, String contactInfo) {
     for (Patron patron : patrons) {
-        if (patron.getName().equals(name) && patron.getContactInfo().equals(contactInfo)) {
+        if (patron.getName().equals(name) && patron.getContactInfo().equals(contactInfo) && (loggedInUser.getRole().equals("admin") || patron.getUserDataOwner().equals(loggedInUser.getUsername()))) {
             return patron;
         }
     }
@@ -199,7 +229,7 @@ public boolean deletePatron(String name, String contactInfo) {
 
   public boolean updateBook(Book updatedBook) {
     for (Book book : books) {
-        if (book.getISBN().equals(updatedBook.getISBN())) {
+        if (book.getISBN().equals(updatedBook.getISBN()) && (loggedInUser.getRole().equals("admin") || book.getUserDataOwner().equals(loggedInUser.getUsername()))) {
             book.setTitle(updatedBook.getTitle());
             book.setAuthor(updatedBook.getAuthor());
             book.setCategory(updatedBook.getCategory());
@@ -212,7 +242,7 @@ public boolean deletePatron(String name, String contactInfo) {
     public ArrayList<Book> searchBookByTitle(String title) {
         ArrayList<Book> booksList = new ArrayList<Book>();
         for (Book book : books) {
-            if (book.getTitle().equalsIgnoreCase(title)) {
+            if (book.getTitle().equalsIgnoreCase(title) && (loggedInUser.getRole().equals("admin") || book.getUserDataOwner().equals(loggedInUser.getUsername()))) {
                 booksList.add(book);
             }
         }
@@ -222,7 +252,7 @@ public boolean deletePatron(String name, String contactInfo) {
     public ArrayList<Book> searchBookByAuthor(String author) {
         ArrayList<Book> booksList = new ArrayList<Book>();
         for (Book book : books) {
-            if (book.getAuthor().equalsIgnoreCase(author)) {
+            if (book.getAuthor().equalsIgnoreCase(author) && (loggedInUser.getRole().equals("admin") || book.getUserDataOwner().equals(loggedInUser.getUsername()))) {
                 booksList.add(book);
             }
         }
@@ -231,7 +261,7 @@ public boolean deletePatron(String name, String contactInfo) {
 
     public Book searchBookByISBN(String ISBN) {
         for (Book book : books) {
-            if (book.getISBN().equals(ISBN)) {
+            if (book.getISBN().equals(ISBN) && (loggedInUser.getRole().equals("admin") || book.getUserDataOwner().equals(loggedInUser.getUsername()))) {
                 return book;
             }
         }
@@ -241,7 +271,7 @@ public boolean deletePatron(String name, String contactInfo) {
     public ArrayList<Book> searchBookByCategory(String category) {
         ArrayList<Book> booksList = new ArrayList<Book>();
         for (Book book : books) {
-            if (book.getCategory().equalsIgnoreCase(category)) {
+            if (book.getCategory().equalsIgnoreCase(category) && (loggedInUser.getRole().equals("admin") || book.getUserDataOwner().equals(loggedInUser.getUsername()))) {
                 booksList.add(book);
             }
         }
@@ -251,7 +281,7 @@ public boolean deletePatron(String name, String contactInfo) {
     // Patron Management
     public boolean addPatron(Patron patron) {
         for (Patron p : patrons) {
-            if (p.getName().equalsIgnoreCase(patron.getName()) || p.getContactInfo().equalsIgnoreCase(patron.getContactInfo())) {
+            if ((p.getName().equalsIgnoreCase(patron.getName()) || p.getContactInfo().equalsIgnoreCase(patron.getContactInfo())) && (loggedInUser.getRole().equals("admin") || p.getUserDataOwner().equals(loggedInUser.getUsername()))) {
                 return false;
             }
         }
@@ -261,7 +291,7 @@ public boolean deletePatron(String name, String contactInfo) {
 
     public void editPatron(String name, String newName, String newContactInfo) {
         for (Patron patron : patrons) {
-            if (patron.getName().equalsIgnoreCase(name)) {
+            if (patron.getName().equalsIgnoreCase(name) && (loggedInUser.getRole().equals("admin") || patron.getUserDataOwner().equals(loggedInUser.getUsername()))) {
                 patron.setName(newName);
                 patron.setContactInfo(newContactInfo);
                 return;
@@ -275,7 +305,7 @@ public boolean deletePatron(String name, String contactInfo) {
 
     public Patron searchPatronByName(String name) {
         for (Patron patron : patrons) {
-            if (patron.getName().equalsIgnoreCase(name)) {
+            if (patron.getName().equalsIgnoreCase(name) && (loggedInUser.getRole().equals("admin") || patron.getUserDataOwner().equals(loggedInUser.getUsername()))) {
                 return patron;
             }
         }
@@ -284,7 +314,7 @@ public boolean deletePatron(String name, String contactInfo) {
 
     public Patron searchPatronByContactInfo(String contactInfo) {
         for (Patron patron : patrons) {
-            if (patron.getContactInfo().equalsIgnoreCase(contactInfo)) {
+            if (patron.getContactInfo().equalsIgnoreCase(contactInfo) && (loggedInUser.getRole().equals("admin") || patron.getUserDataOwner().equals(loggedInUser.getUsername()))) {
                 return patron;
             }
         }
@@ -303,12 +333,12 @@ public boolean deletePatron(String name, String contactInfo) {
         }
     } */
 
-    public boolean checkOutBookWithReturn(String isbn, String patronName, Date dueDate) {
+    public boolean checkOutBookWithReturn(String isbn, String patronName, Date dueDate, String currentUser) {
       Book book = searchBookByISBN(isbn);
       Patron patron = searchPatronByName(patronName);
 
       if (book != null && patron != null && !isBookLoaned(isbn)) {
-          Loan loan = new Loan(book, patron, new Date(), dueDate);
+          Loan loan = new Loan(book, patron, new Date(), dueDate, currentUser);
           loans.add(loan);
           book.setAvailable(false);
           return true;
@@ -327,9 +357,9 @@ public boolean deletePatron(String name, String contactInfo) {
         }
     } */
 
-    public boolean checkInBookWithReturn(String isbn) {
+    public boolean checkInBookWithReturn(String isbn, String patronName) {
       for (Loan loan : loans) {
-          if (loan.getBook().getISBN().equals(isbn) && !loan.isReturned()) {
+          if (loan.getBook().getISBN().equals(isbn) && loan.getPatron().getName().equals(patronName) &&!loan.isReturned() && (loggedInUser.getRole().equals("admin") || loan.getUserDataOwner().equals(loggedInUser.getUsername()))) {
               loan.returnBook(new Date());
               loan.getBook().setAvailable(true);
               return true;
@@ -340,7 +370,7 @@ public boolean deletePatron(String name, String contactInfo) {
 
   private boolean isBookLoaned(String isbn) {
     for (Loan loan : loans) {
-        if (loan.getBook().getISBN().equals(isbn) && !loan.isReturned()) {
+        if (loan.getBook().getISBN().equals(isbn) && !loan.isReturned() && (loggedInUser.getRole().equals("admin") || loan.getUserDataOwner().equals(loggedInUser.getUsername()))) {
             return true;
         }
     }
@@ -350,7 +380,7 @@ public boolean deletePatron(String name, String contactInfo) {
     public List<Loan> getOverdueLoans() {
         List<Loan> overdueLoans = new ArrayList<>();
         for (Loan loan : loans) {
-            if (!loan.isReturned() && isOverdue(loan)) {
+            if (!loan.isReturned() && isOverdue(loan) && (loggedInUser.getRole().equals("admin") || loan.getUserDataOwner().equals(loggedInUser.getUsername()))) {
                 overdueLoans.add(loan);
             }
         }
@@ -367,7 +397,7 @@ public boolean deletePatron(String name, String contactInfo) {
     public boolean deleteOverdueFine(int id) {
         int count = 0;
         for (Loan loan : loans) {
-          if(loan.isOverdue()) {
+          if(loan.isOverdue() && (loggedInUser.getRole().equals("admin") || loan.getUserDataOwner().equals(loggedInUser.getUsername()))) {
             count++;
             if (count == id) {
                 loan.setReturnDate(loan.getDueDate()); // Set return date to the due date, so it wont be overdue anymore.
