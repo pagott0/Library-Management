@@ -1,5 +1,13 @@
 import java.io.Serializable;
 
+/**
+ * A classe Patron representa um patrono (cliente) na biblioteca.
+ *
+ * <p>Um patrono contém informações sobre o nome, informações de contato e o dono dos dados do usuário
+ * (que pode ser um bibliotecário responsável por gerenciar os dados deste patrono).</p>
+ *
+ * <p>Esta classe implementa a interface Serializable para permitir a serialização dos objetos Patron.</p>
+ */
 public class Patron implements Serializable {
     private String name;
     private String contactInfo;

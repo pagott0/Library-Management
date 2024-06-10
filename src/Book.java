@@ -1,6 +1,12 @@
 
 import java.io.Serializable;
 
+/**
+ * A classe Book representa um livro na biblioteca.
+ * Ela contém informações sobre o título, autor, ISBN, categoria, disponibilidade e dono dos dados do usuário.
+ * Esta classe implementa a interface Serializable para permitir a serialização dos objetos Book.
+ */
+
 public class Book implements Serializable {
     private String title;
     private String author;

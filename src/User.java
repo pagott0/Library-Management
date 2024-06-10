@@ -1,9 +1,19 @@
 import java.io.Serializable;
 
-// A classe User é dividida em 2 tipos de usuários: admins e bibliotecários (librarians)
-// Bibliotecários são os principais usuários do sistema, eles podem adicionar/ler/editar/excluir livros (books), clientes (patrons) e empréstimos (loans), sendo que cara bibliotecário tem acesso apenas aos seus próprios dados.
-// Os admins, por sua vez, tem acesso a adicionar/ler/editar/excluir os livros, clientes e empréstimos de todos os bibliotecários existentes no sistema.
-// Note: a abordagem para desenvolver esse sistema é muito subjetiva, escolhemos fazer dessa maneira, mas existem inumeras outras possiveis.
+/**
+ * A classe User representa um usuário no sistema de biblioteca.
+ *
+ * <p>Existem dois tipos de usuários: admins e bibliotecários (librarians).
+ * </p>
+ * <ul>
+ * <li>Bibliotecários são os principais usuários do sistema. Eles podem adicionar, ler, editar e excluir livros, clientes (patrons) e empréstimos (loans). Cada bibliotecário tem acesso apenas aos seus próprios dados.</li>
+ * <li>Admins têm acesso para adicionar, ler, editar e excluir livros, clientes e empréstimos de todos os bibliotecários existentes no sistema.</li>
+ * </ul>
+ *
+ * <p>Nota: A abordagem para desenvolver este sistema é muito subjetiva. Escolhemos fazê-lo desta maneira, mas existem inúmeras outras possíveis.</p>
+ *
+ * <p>Esta classe implementa a interface Serializable para permitir a serialização dos objetos User.</p>
+ */
 public class User implements Serializable {
     private String username;
     private String password;

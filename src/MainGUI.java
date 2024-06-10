@@ -8,6 +8,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * A classe MainGUI representa a interface gráfica do usuário (GUI) para o sistema de gerenciamento de biblioteca.
+ *
+ * <p>Esta classe fornece métodos para:
+ * <ul>
+ * <li>Carregar e salvar dados da biblioteca.</li>
+ * <li>Exibir telas de login e registro.</li>
+ * <li>Inicializar a GUI principal com abas para gerenciamento de livros, patronos, empréstimos e multas atrasadas.</li>
+ * </ul>
+ * </p>
+ */
+
 public class MainGUI {
     private Library library;
     private User currentUser;

@@ -3,7 +3,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-// Classe Library que implementa Serializable para permitir a serialização dos objetos
+/**
+ * A classe Library representa um sistema de biblioteca que gerencia livros, patronos, empréstimos e usuários.
+ * Ela fornece métodos para adicionar, remover e buscar livros e patronos, bem como para gerenciar empréstimos.
+ * A classe também suporta autenticação de usuários e serialização de dados para arquivos.
+ */
 public class Library implements Serializable {
     // Listas para armazenar livros, patronos, empréstimos e usuários
     private List<Book> books;
