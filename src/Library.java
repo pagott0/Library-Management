@@ -62,24 +62,14 @@ public class Library implements Serializable {
 
     // --------------------- Métodos para gerenciamento de livros ---------------------
     // Retorna todos os livros, ou apenas os livros do usuário logado se ele não for admin
-    public List<Book> getAllBooks(User currentUser) {
-        if (currentUser.getRole().equals("admin")) {
-            return books;
-        } else {
-            List<Book> userBooks = new ArrayList<>();
-            for (Book book : books) {
-                if (book.getUserDataOwner().equals(currentUser.getUsername())) {
-                    userBooks.add(book);
-                }
-            }
-            return userBooks;
-        }
+    public List<Book> getAllBooks() {
+        return books;
     }
 
     // Adiciona um livro se não houver um livro com o mesmo ISBN do mesmo usuário
     public boolean addBook(Book book) {
         for (Book b : books) {
-            if (b.getISBN().equals(book.getISBN()) && (loggedInUser.getRole().equals("admin") || b.getUserDataOwner().equals(loggedInUser.getUsername()))) {
+            if (b.getISBN().equals(book.getISBN())) {
                 return false;
             }
         }
@@ -88,9 +78,9 @@ public class Library implements Serializable {
     }
 
     // Busca um livro pelo ISBN, considerando as permissões do usuário logado
-    public Book searchBook(String isbn) {
+    public Book searchBook(String ISBN) {
         for (Book book : books) {
-            if (book.getISBN().equals(isbn) && (loggedInUser.getRole().equals("admin") || book.getUserDataOwner().equals(loggedInUser.getUsername()))) {
+            if (book.getISBN().equals(ISBN)) {
                 return book;
             }
         }
@@ -99,7 +89,7 @@ public class Library implements Serializable {
 
     // Deleta um livro pelo ISBN
     public boolean deleteBook(String isbn) {
-        Book book = searchBook(isbn);
+        Book book = searchBookByISBN(isbn);
         if (book != null) {
             books.remove(book);
             return true;
@@ -110,7 +100,7 @@ public class Library implements Serializable {
     // Atualiza as informações de um livro
     public boolean updateBook(Book updatedBook) {
         for (Book book : books) {
-            if (book.getISBN().equals(updatedBook.getISBN()) && (loggedInUser.getRole().equals("admin") || book.getUserDataOwner().equals(loggedInUser.getUsername()))) {
+            if (book.getISBN().equals(updatedBook.getISBN())) {
                 book.setTitle(updatedBook.getTitle());
                 book.setAuthor(updatedBook.getAuthor());
                 book.setCategory(updatedBook.getCategory());
@@ -124,7 +114,7 @@ public class Library implements Serializable {
     public ArrayList<Book> searchBookByTitle(String title) {
         ArrayList<Book> booksList = new ArrayList<Book>();
         for (Book book : books) {
-            if (book.getTitle().equalsIgnoreCase(title) && (loggedInUser.getRole().equals("admin") || book.getUserDataOwner().equals(loggedInUser.getUsername()))) {
+            if (book.getTitle().equalsIgnoreCase(title)) {
                 booksList.add(book);
             }
         }
@@ -135,7 +125,7 @@ public class Library implements Serializable {
     public ArrayList<Book> searchBookByAuthor(String author) {
         ArrayList<Book> booksList = new ArrayList<Book>();
         for (Book book : books) {
-            if (book.getAuthor().equalsIgnoreCase(author) && (loggedInUser.getRole().equals("admin") || book.getUserDataOwner().equals(loggedInUser.getUsername()))) {
+            if (book.getAuthor().equalsIgnoreCase(author)) {
                 booksList.add(book);
             }
         }
@@ -145,7 +135,7 @@ public class Library implements Serializable {
     // Busca um livro pelo ISBN
     public Book searchBookByISBN(String ISBN) {
         for (Book book : books) {
-            if (book.getISBN().equals(ISBN) && (loggedInUser.getRole().equals("admin") || book.getUserDataOwner().equals(loggedInUser.getUsername()))) {
+            if (book.getISBN().equals(ISBN)) {
                 return book;
             }
         }
@@ -156,7 +146,7 @@ public class Library implements Serializable {
     public ArrayList<Book> searchBookByCategory(String category) {
         ArrayList<Book> booksList = new ArrayList<Book>();
         for (Book book : books) {
-            if (book.getCategory().equalsIgnoreCase(category) && (loggedInUser.getRole().equals("admin") || book.getUserDataOwner().equals(loggedInUser.getUsername()))) {
+            if (book.getCategory().equalsIgnoreCase(category)) {
                 booksList.add(book);
             }
         }
@@ -165,27 +155,16 @@ public class Library implements Serializable {
 
     // ---------------------- Métodos para gerenciamento de empréstimos ------------------------
     // Retorna todos os empréstimos, ou apenas os empréstimos do usuário logado se ele não for admin
-    public List<Loan> getAllLoans(User currentUser) {
-        if (currentUser.getRole().equals("admin")) {
-            return loans;
-        } else {
-            List<Loan> userLoans = new ArrayList<>();
-            for (Loan loan : loans) {
-                if (loan.getUserDataOwner().equals(currentUser.getUsername())) {
-                    userLoans.add(loan);
-                }
-            }
-            return userLoans;
-        }
+    public List<Loan> getAllLoans() {
+        return loans;
     }
-
     // Realiza o empréstimo de um livro, verificando se o livro está disponível e se o patrono existe
-    public boolean checkOutBook(String isbn, String patronName, Date dueDate, String currentUser) {
+    public boolean checkOutBook(String isbn, String patronName, Date dueDate) {
         Book book = searchBookByISBN(isbn);
         Patron patron = searchPatronByName(patronName);
 
         if (book != null && patron != null && !isBookLoaned(isbn)) {
-            Loan loan = new Loan(book, patron, new Date(), dueDate, currentUser);
+            Loan loan = new Loan(book, patron, new Date(), dueDate);
             loans.add(loan);
             book.setAvailable(false);
             return true;
@@ -196,7 +175,7 @@ public class Library implements Serializable {
     // Realiza a devolução de um livro
     public boolean checkInBook(String isbn, String patronName) {
         for (Loan loan : loans) {
-            if (loan.getBook().getISBN().equals(isbn) && loan.getPatron().getName().equals(patronName) && !loan.isReturned() && (loggedInUser.getRole().equals("admin") || loan.getUserDataOwner().equals(loggedInUser.getUsername()))) {
+            if (loan.getBook().getISBN().equals(isbn) && loan.getPatron().getName().equals(patronName) && !loan.isReturned()) {
                 loan.returnBook(new Date());
                 loan.getBook().setAvailable(true);
                 return true;
@@ -208,7 +187,7 @@ public class Library implements Serializable {
     // Verifica se um livro está emprestado
     private boolean isBookLoaned(String isbn) {
         for (Loan loan : loans) {
-            if (loan.getBook().getISBN().equals(isbn) && !loan.isReturned() && (loggedInUser.getRole().equals("admin") || loan.getUserDataOwner().equals(loggedInUser.getUsername()))) {
+            if (loan.getBook().getISBN().equals(isbn) && !loan.isReturned()) {
                 return true;
             }
         }
@@ -219,7 +198,7 @@ public class Library implements Serializable {
     public boolean deleteOverdueFine(int id) {
         int count = 0;
         for (Loan loan : loans) {
-            if (loan.isOverdue() && (loggedInUser.getRole().equals("admin") || loan.getUserDataOwner().equals(loggedInUser.getUsername()))) {
+            if (loan.isOverdue()) {
                 count++;
                 if (count == id) {
                     loan.setReturnDate(loan.getDueDate());
@@ -232,24 +211,14 @@ public class Library implements Serializable {
 
     // ----------------------------- Métodos para gerenciamento de patronos ----------------------------
     // Retorna todos os patronos, ou apenas os patronos do usuário logado se ele não for admin
-    public List<Patron> getAllPatrons(User currentUser) {
-        if (currentUser.getRole().equals("admin")) {
-            return patrons;
-        } else {
-            List<Patron> userPatrons = new ArrayList<>();
-            for (Patron patron : patrons) {
-                if (patron.getUserDataOwner().equals(currentUser.getUsername())) {
-                    userPatrons.add(patron);
-                }
-            }
-            return userPatrons;
-        }
+    public List<Patron> getAllPatrons() {
+        return patrons;
     }
 
     // Busca um patrono pelo nome e contato
     public Patron searchPatron(String name, String contactInfo) {
         for (Patron patron : patrons) {
-            if (patron.getName().equals(name) && patron.getContactInfo().equals(contactInfo) && (loggedInUser.getRole().equals("admin") || patron.getUserDataOwner().equals(loggedInUser.getUsername()))) {
+            if (patron.getName().equals(name) && patron.getContactInfo().equals(contactInfo)) {
                 return patron;
             }
         }
@@ -269,7 +238,7 @@ public class Library implements Serializable {
     // Adiciona um novo patrono
     public boolean addPatron(Patron patron) {
         for (Patron p : patrons) {
-            if ((p.getName().equalsIgnoreCase(patron.getName()) || p.getContactInfo().equalsIgnoreCase(patron.getContactInfo())) && (loggedInUser.getRole().equals("admin") || p.getUserDataOwner().equals(loggedInUser.getUsername()))) {
+            if (p.getName().equalsIgnoreCase(patron.getName()) || p.getContactInfo().equalsIgnoreCase(patron.getContactInfo())) {
                 return false;
             }
         }
@@ -280,7 +249,7 @@ public class Library implements Serializable {
     // Edita as informações de um patrono
     public void editPatron(String name, String newName, String newContactInfo) {
         for (Patron patron : patrons) {
-            if (patron.getName().equalsIgnoreCase(name) && (loggedInUser.getRole().equals("admin") || patron.getUserDataOwner().equals(loggedInUser.getUsername()))) {
+            if (patron.getName().equalsIgnoreCase(name)) {
                 patron.setName(newName);
                 patron.setContactInfo(newContactInfo);
                 return;
@@ -291,7 +260,7 @@ public class Library implements Serializable {
     // Busca um patrono pelo nome
     public Patron searchPatronByName(String name) {
         for (Patron patron : patrons) {
-            if (patron.getName().equalsIgnoreCase(name) && (loggedInUser.getRole().equals("admin") || patron.getUserDataOwner().equals(loggedInUser.getUsername()))) {
+            if (patron.getName().equalsIgnoreCase(name)) {
                 return patron;
             }
         }
@@ -301,7 +270,7 @@ public class Library implements Serializable {
     // Busca um patrono pelo contato
     public Patron searchPatronByContactInfo(String contactInfo) {
         for (Patron patron : patrons) {
-            if (patron.getContactInfo().equalsIgnoreCase(contactInfo) && (loggedInUser.getRole().equals("admin") || patron.getUserDataOwner().equals(loggedInUser.getUsername()))) {
+            if (patron.getContactInfo().equalsIgnoreCase(contactInfo)) {
                 return patron;
             }
         }

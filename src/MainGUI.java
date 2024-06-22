@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,6 +24,7 @@ import java.util.List;
 public class MainGUI {
     private Library library;
     private User currentUser;
+    private boolean isAdmin;
 
     //Construtor da GUI, carrega os dados e mostra a tela de login
     public MainGUI() {
@@ -219,10 +221,11 @@ public class MainGUI {
 
     // Método para inicializar a interface gráfica do usuário (GUI)
     private void initGUI() {
+        this.isAdmin = !currentUser.getRole().equals("librarian");
         // Criação do frame (janela) principal para o sistema de gerenciamento de biblioteca
         JFrame frame = new JFrame("Library Management System");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Define a operação de fechamento para encerrar a aplicação ao fechar a janela
-        frame.setSize(800, 600); // Define o tamanho da janela
+        frame.setSize(800, 1000); // Define o tamanho da janela
 
         // Criação de um JTabbedPane para gerenciar múltiplos painéis com abas
         JTabbedPane tabbedPane = new JTabbedPane();
@@ -336,6 +339,21 @@ public class MainGUI {
         formPanel.add(new JLabel("ISBN:"), gbc);
         gbc.gridx = 1;
         JTextField isbnField = new JTextField(20);
+        ((AbstractDocument) isbnField.getDocument()).setDocumentFilter(new DocumentFilter() {
+            @Override
+            public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+                if (string.matches("[0-9]+")) { // Verifica se a string contém apenas números
+                    super.insertString(fb, offset, string, attr);
+                }
+            }
+
+            @Override
+            public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+                if (text.matches("[0-9]+")) {
+                    super.replace(fb, offset, length, text, attrs);
+                }
+            }
+        });
         formPanel.add(isbnField, gbc);
 
         // Adiciona o campo de entrada para a categoria do livro
@@ -359,6 +377,11 @@ public class MainGUI {
                 String isbn = isbnField.getText();
                 String category = categoryField.getText();
 
+                if (!isAdmin) {
+                    JOptionPane.showMessageDialog(panel, "You do not have permission to add books, only admins can do it.");
+                    return;
+                }
+
                 // Verifica se todos os campos estão preenchidos
                 if (title.trim().isEmpty() || author.trim().isEmpty() || isbn.trim().isEmpty() || category.trim().isEmpty()) {
                     JOptionPane.showMessageDialog(panel, "All fields are required.");
@@ -366,7 +389,7 @@ public class MainGUI {
                 }
 
                 // Adiciona o livro à biblioteca e verifica se foi bem-sucedido
-                boolean successfulAddedBook = library.addBook(new Book(title, author, isbn, category, currentUser.getUsername()));
+                boolean successfulAddedBook = library.addBook(new Book(title, author, isbn, category));
                 if (successfulAddedBook) {
                     JOptionPane.showMessageDialog(panel, "Book added successfully!");
                 } else {
@@ -375,6 +398,15 @@ public class MainGUI {
             }
         });
         formPanel.add(addButton, gbc);
+
+        if (!isAdmin) {
+            titleField.setEditable(false);
+            authorField.setEditable(false);
+            isbnField.setEditable(false);
+            categoryField.setEditable(false);
+            addButton.setEnabled(false);
+            addButton.setToolTipText("Only admins can add books");
+        }
 
         // Mensagem informando que o ISBN deve ser único
         gbc.gridx = 0;
@@ -398,6 +430,21 @@ public class MainGUI {
         deletePanel.add(new JLabel("ISBN:"), gbc);
         gbc.gridx = 1;
         JTextField isbnToDeleteField = new JTextField(20);
+        ((AbstractDocument) isbnToDeleteField.getDocument()).setDocumentFilter(new DocumentFilter() {
+            @Override
+            public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+                if (string.matches("[0-9]+")) { // Verifica se a string contém apenas números
+                    super.insertString(fb, offset, string, attr);
+                }
+            }
+
+            @Override
+            public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+                if (text.matches("[0-9]+")) {
+                    super.replace(fb, offset, length, text, attrs);
+                }
+            }
+        });
         deletePanel.add(isbnToDeleteField, gbc);
 
         // Botão para excluir um livro
@@ -409,6 +456,11 @@ public class MainGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String isbn = isbnToDeleteField.getText();
+
+                if (!isAdmin) {
+                    JOptionPane.showMessageDialog(panel, "You do not have permission to delete books, only admins can do it.");
+                    return;
+                }
 
                 // Verifica se o campo de ISBN está preenchido
                 if (isbn.isEmpty()) {
@@ -436,6 +488,11 @@ public class MainGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String isbn = isbnToDeleteField.getText();
+
+                if (!isAdmin) {
+                    JOptionPane.showMessageDialog(panel, "You do not have permission to update books, only admins can do it.");
+                    return;
+                }
 
                 // Verifica se o campo de ISBN está preenchido
                 if (isbn.isEmpty()) {
@@ -522,6 +579,13 @@ public class MainGUI {
             }
         });
         deletePanel.add(updateButton, gbc);
+        if (!isAdmin) {
+            isbnToDeleteField.setEditable(false);
+            deleteButton.setEnabled(false);
+            updateButton.setEnabled(false);
+            deleteButton.setToolTipText("Only admins can update books");
+            updateButton.setToolTipText("Only admins can delete books");
+        }
 
         // Adiciona o painel de exclusão ao painel principal
         panel.add(deletePanel);
@@ -582,7 +646,7 @@ public class MainGUI {
                 if (!"ISBN".equals(criteria) && books != null && books.size() > 0) {
                     StringBuilder bookString = new StringBuilder();
                     for (Book bookItem : books) {
-                        bookString.append("LIBRARIAN : ").append(bookItem.getUserDataOwner()).append(" || ").append(bookItem.toString()).append("\n\n");
+                        bookString.append(bookItem.toString()).append("\n\n");
                     }
                     searchResults.setText(bookString.toString());
                 } else if ("ISBN".equals(criteria) && book != null) {
@@ -599,13 +663,13 @@ public class MainGUI {
         showAllBooksButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                List<Book> books = library.getAllBooks(currentUser);
+                List<Book> books = library.getAllBooks();
 
                 // Exibe todos os livros no JTextArea
                 if (books != null && books.size() > 0) {
                     StringBuilder bookString = new StringBuilder();
                     for (Book bookItem : books) {
-                        bookString.append("LIBRARIAN : ").append(bookItem.getUserDataOwner()).append(" || ").append(bookItem.toString()).append("\n\n");
+                        bookString.append(bookItem.toString()).append("\n\n");
                     }
                     searchResults.setText(bookString.toString());
                 } else {
@@ -675,7 +739,7 @@ public class MainGUI {
                 }
 
                 // Tenta adicionar o patrono à biblioteca
-                boolean patronAdded = library.addPatron(new Patron(name, contact, currentUser.getUsername()));
+                boolean patronAdded = library.addPatron(new Patron(name, contact));
                 if (patronAdded) {
                     JOptionPane.showMessageDialog(panel, "Patron added successfully!");
                 } else {
@@ -840,7 +904,7 @@ public class MainGUI {
                 }
 
                 if (patron != null) {
-                    String patronString = "LIBRARIAN : " + patron.getUserDataOwner() + " || " + patron.toString();
+                    String patronString = patron.toString();
                     searchResults.setText(patronString);
                 } else {
                     searchResults.setText("No results found.");
@@ -854,12 +918,12 @@ public class MainGUI {
         showAllPatronsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                List<Patron> patrons = library.getAllPatrons(currentUser);
+                List<Patron> patrons = library.getAllPatrons();
 
                 if (patrons != null && patrons.size() > 0) {
                     String patronString = "";
                     for (Patron patronItem : patrons) {
-                        patronString += "LIBRARIAN : " + patronItem.getUserDataOwner() + " || " + patronItem.toString() + "\n\n";
+                        patronString += patronItem.toString() + "\n\n";
                     }
                     searchResults.setText(patronString);
                 } else {
@@ -899,6 +963,21 @@ public class MainGUI {
         formPanel.add(new JLabel("Book ISBN:"), gbc);
         gbc.gridx = 1;
         JTextField isbnField = new JTextField(20);
+        ((AbstractDocument) isbnField.getDocument()).setDocumentFilter(new DocumentFilter() {
+            @Override
+            public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+                if (string.matches("[0-9]+")) {
+                    super.insertString(fb, offset, string, attr);
+                }
+            }
+
+            @Override
+            public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+                if (text.matches("[0-9]+")) {
+                    super.replace(fb, offset, length, text, attrs);
+                }
+            }
+        });
         formPanel.add(isbnField, gbc);
 
         // Adiciona um rótulo e campo de texto para o nome do patrono.
@@ -914,8 +993,20 @@ public class MainGUI {
         gbc.gridy = 2;
         formPanel.add(new JLabel("Due Date (dd/MM/yyyy):"), gbc);
         gbc.gridx = 1;
-        JTextField dueDateField = new JTextField(20);
+
+        JFormattedTextField dueDateField = null;
+        try {
+            MaskFormatter dateMask = new MaskFormatter("##/##/####");
+            dateMask.setPlaceholderCharacter('_');
+            dueDateField = new JFormattedTextField(dateMask);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            // Tratar a exceção caso o formato da máscara seja inválido
+            // Exemplo: exibir uma mensagem de erro para o usuário
+            JOptionPane.showMessageDialog(panel, "Erro ao criar campo de data.", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
         formPanel.add(dueDateField, gbc);
+        // ---->>> Fim das alterações <<<----
 
         // Adiciona um botão para realizar o checkout de um livro.
         gbc.gridx = 0;
@@ -923,17 +1014,19 @@ public class MainGUI {
         gbc.gridwidth = 2;
         JTextArea activeLoans = new JTextArea(10, 50);
         JButton checkoutButton = new JButton("Check Out");
+        JFormattedTextField finalDueDateField = dueDateField;
         checkoutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String isbn = isbnField.getText();
                 String patronId = patronIdField.getText();
-                String dueDateStr = dueDateField.getText();
+                String dueDateStr = finalDueDateField.getText();
+
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
                 try {
                     Date dueDate = sdf.parse(dueDateStr);
-                    if (library.checkOutBook(isbn, patronId, dueDate, currentUser.getUsername())) {
+                    if (library.checkOutBook(isbn, patronId, dueDate)) {
                         JOptionPane.showMessageDialog(panel, "Book checked out successfully!");
                         updateActiveLoans(activeLoans);
                         updateOverdueFines(overdueFines);
@@ -982,7 +1075,7 @@ public class MainGUI {
 
     private void updateActiveLoans(JTextArea activeLoans) {
         // Obtém a lista de todos os empréstimos associados ao usuário atual.
-        List<Loan> loans = library.getAllLoans(currentUser);
+        List<Loan> loans = library.getAllLoans();
 
         // Usa um StringBuilder para construir uma string contendo informações sobre os empréstimos ativos.
         StringBuilder sb = new StringBuilder();
@@ -998,8 +1091,7 @@ public class MainGUI {
                 Patron patron = loan.getPatron();
 
                 // Adiciona as informações do empréstimo ao StringBuilder.
-                sb.append("LIBRARIAN: ").append(loan.getUserDataOwner())
-                        .append(" || Book: ").append(book.getTitle())
+                sb.append("Book: ").append(book.getTitle())
                         .append(" | Author: ").append(book.getAuthor())
                         .append(" | ISBN: ").append(book.getISBN())
                         .append(" | Patron: ").append(patron.getName())
@@ -1016,7 +1108,7 @@ public class MainGUI {
 
     private void updateOverdueFines(JTextArea overdueFines) {
         // Obtém a lista de todos os empréstimos associados ao usuário atual.
-        List<Loan> loans = library.getAllLoans(currentUser);
+        List<Loan> loans = library.getAllLoans();
 
         // Usa um StringBuilder para construir uma string contendo informações sobre multas de empréstimos atrasados.
         StringBuilder sb = new StringBuilder();
@@ -1039,7 +1131,6 @@ public class MainGUI {
 
                 // Adiciona as informações do empréstimo atrasado ao StringBuilder.
                 sb.append("ID: ").append(id)
-                        .append(" | LIBRARIAN: ").append(loan.getUserDataOwner())
                         .append(" || Book: ").append(book.getTitle())
                         .append(" | Author: ").append(book.getAuthor())
                         .append(" | ISBN: ").append(book.getISBN())

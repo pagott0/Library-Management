@@ -10,16 +10,14 @@ public class Loan implements Serializable {
     //Definimos a taxa para atrasos em empréstimos com o valor 100 U$, independente do tempo.
     private static final double FINE_AMOUNT = 100.0;
     private boolean isReturned;
-    private String userDataOwner;
 
     //Construtor para os empréstimos
-    public Loan(Book book, Patron patron, Date loanDate, Date dueDate, String userDataOwner) {
+    public Loan(Book book, Patron patron, Date loanDate, Date dueDate) {
         this.book = book;
         this.patron = patron;
         this.loanDate = loanDate;
         this.isReturned = false;
         this.dueDate = dueDate;
-        this.userDataOwner = userDataOwner;
     }
 
     // Getters e Setters
@@ -82,15 +80,6 @@ public class Loan implements Serializable {
         }
         return 0;
     }
-
-    public String getUserDataOwner() {
-        return userDataOwner;
-    }
-
-    public void setUserDataOwner(String userDataOwner) {
-        this.userDataOwner = userDataOwner;
-    }
-
 
     @Override
     public String toString() {
