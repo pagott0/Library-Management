@@ -184,6 +184,14 @@ public class MainGUI {
                 String username = usernameField.getText();
                 String password = new String(passwordField.getPassword());
                 String confirmPassword = new String(confirmPasswordField.getPassword());
+                if(username.trim().isEmpty() || password.trim().isEmpty() || confirmPassword.trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(frame, "Fill in all fields to register.");
+                    return;
+                }
+                if(!adminRadioButton.isSelected() && !librarianRadioButton.isSelected()) {
+                    JOptionPane.showMessageDialog(frame, "Choose a role, admin or librarian.");
+                    return;
+                }
                 String role = adminRadioButton.isSelected() ? "admin" : "librarian"; // Define o papel baseado na seleção do botão de rádio
 
                 // Verifica se as senhas coincidem
@@ -352,7 +360,7 @@ public class MainGUI {
                 String category = categoryField.getText();
 
                 // Verifica se todos os campos estão preenchidos
-                if (title.isEmpty() || author.isEmpty() || isbn.isEmpty() || category.isEmpty()) {
+                if (title.trim().isEmpty() || author.trim().isEmpty() || isbn.trim().isEmpty() || category.trim().isEmpty()) {
                     JOptionPane.showMessageDialog(panel, "All fields are required.");
                     return;
                 }
@@ -488,7 +496,7 @@ public class MainGUI {
                         String newCategory = updateCategoryField.getText();
 
                         // Verifica se todos os campos estão preenchidos
-                        if (newTitle.isEmpty() || newAuthor.isEmpty() || newCategory.isEmpty()) {
+                        if (newTitle.trim().isEmpty() || newAuthor.trim().isEmpty() || newCategory.trim().isEmpty()) {
                             JOptionPane.showMessageDialog(updateDialog, "All fields are required.");
                             return;
                         }
