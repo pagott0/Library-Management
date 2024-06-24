@@ -1,4 +1,4 @@
-1. Requisitos Complementares
+1. **Requisitos Complementares**
 Requisitos adicionais para a implementação do sistema de gerenciamento de biblioteca em Java:
 
   Validação de dados: Implementação de validações para garantir a integridade dos dados inseridos no sistema.
@@ -12,7 +12,7 @@ Requisitos adicionais para a implementação do sistema de gerenciamento de bibl
     - Persistência de dados: Implementação de persistência de dados utilizando arquivos.
     - Controle de acesso: O sistema deve implementar controle de acesso para diferentes tipos de usuários (bibliotecário e administrador), restringindo as - funcionalidades de acordo com o tipo de usuário.
 
-2. Descrição do Projeto
+2. **Descrição do Projeto**
 O projeto implementa um sistema de gerenciamento de biblioteca em Java com interface gráfica utilizando Swing, que permite o controle de livros, clientes (patrons), empréstimos e usuários. O sistema oferece as seguintes funcionalidades:
 Diagrama de Classes:
 
@@ -123,7 +123,7 @@ classDiagram
     - Para atribuir um empréstimo (check out de um livro), deve ser selecionado um livro, um cliente e uma data de devolução. Para devolver um livro (check in), deve ser selecionado o livro e o cliente, a data de check in é automaticamente recebida. Se a data de check-in for superior à data de devolução, uma multa será aplicada e o cliente irá para a sessão Overdue Fines.
     - Definimos uma taxa fixa de 100 U$ para multas por atraso.
 
-3. Comentários sobre o Código
+3. **Comentários sobre o Código**
 - O código está organizado em classes, cada uma com responsabilidades bem definidas, facilitando a manutenção e o entendimento.
 - A classe Library é a classe principal, responsável por gerenciar todas as funcionalidades do sistema.
 - As classes Book, Patron e Loan representam as entidades do sistema.
@@ -132,11 +132,12 @@ classDiagram
 - A interface gráfica foi implementada utilizando Swing, proporcionando uma interface amigável para o usuário.
 - O código inclui comentários explicando a lógica e o funcionamento das diferentes partes do sistema.
 
-4. Plano de testes
-  Para a realização dos testes, utilizamos da abordagem de testes manuais. Os testes começaram a ser feitos após a finalização da versão inicial da nossa aplicação. Decidimos começar com os testes manuais, que foram feitos da seguinte forma: primeiro um teste geral, simulando um usuário, testando as funcionalidades e alguns limites, mas nada procedural. A rodada de testes seguinte, seguiu um certo procedimento: rastreamos e anotamos os happy paths possíveis da aplicação e os possíveis erros nesses paths (imagem do caderno), a partir disso foi sendo testado caminho por caminho, partindo primeiro dos happy paths para garantir que o “certo” já estava funcionando. Após isso foi testado os possíveis erros nesses nos caminhos testados.
-5. Resultados dos testes
+4. **Plano de testes**
 
-6. Procedimentos de Construção
+    Para a realização dos testes, utilizamos da abordagem de testes manuais. Os testes começaram a ser feitos após a finalização da versão inicial da nossa aplicação. Decidimos começar com os testes manuais, que foram feitos da seguinte forma: primeiro um teste geral, simulando um usuário, testando as funcionalidades e alguns limites, mas nada procedural. A rodada de testes seguinte, seguiu um certo procedimento: rastreamos e anotamos os happy paths possíveis da aplicação e os possíveis erros nesses paths (imagem do caderno), a partir disso foi sendo testado caminho por caminho, partindo primeiro dos happy paths para garantir que o “certo” já estava funcionando. Após isso foi testado os possíveis erros nesses nos caminhos testados.
+5. **Resultados dos testes**
+
+6. **Procedimentos de Construção**
 Para executar o código, siga os seguintes passos:
 
   Instalação do software:
@@ -156,13 +157,13 @@ Para executar o código, siga os seguintes passos:
   - Compile o projeto na IDE.
   - Execute a classe Main.java para iniciar o programa.
 
-7. Problemas Encontrados
+7. **Problemas Encontrados**
   - Dificuldade na implementação da interface gráfica com Swing: Swing pode ser um pouco verboso para criar interfaces gráficas complexas.
   - Gerenciamento de datas: A manipulação de datas em Java pode ser um pouco complexa, exigindo atenção na formatação e conversão de datas.
   - Dificuldade em definir funções e responsabilidades dos cargos de bibliotecário e administrador: A definição clara das funções e permissões de cada tipo de usuário é essencial para garantir a segurança e a integridade do sistema.
   - Desafio em definir como funcionario a questão dos empréstimos: A lógica de empréstimos e devoluções pode ser complexa, especialmente ao lidar com multas por atraso e controle de disponibilidade de livros.
 
-8. Comentários Adicionais
+8. **Comentários Adicionais**
   - O sistema de gerenciamento de biblioteca implementado é um projeto básico e pode ser expandido com mais funcionalidades, como:
     - Sistema de busca avançada.
     - Geração de relatórios.
