@@ -66,6 +66,10 @@ public class Library implements Serializable {
         return books;
     }
 
+    public List<User> getAllUsers() {
+        return users;
+    }
+
     // Adiciona um livro se não houver um livro com o mesmo ISBN do mesmo usuário
     public boolean addBook(Book book) {
         for (Book b : books) {

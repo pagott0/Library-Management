@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A classe MainGUI representa a interface gráfica do usuário (GUI) para o sistema de gerenciamento de biblioteca.
@@ -200,6 +201,14 @@ public class MainGUI {
                 if (!password.equals(confirmPassword)) {
                     JOptionPane.showMessageDialog(frame, "Passwords do not match.");
                     return;
+                }
+
+                List<User> usersInDb = library.getAllUsers();
+                for(User user : usersInDb) {
+                    if(Objects.equals(user.getUsername(), username) || Objects.equals(user.getUsername().trim(), username)) {
+                        JOptionPane.showMessageDialog(frame, "Username already exists, change and try again.");
+                        return;
+                    }
                 }
 
                 // Tenta registrar o usuário e exibe mensagens de sucesso ou erro
