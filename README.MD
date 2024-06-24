@@ -135,6 +135,177 @@ classDiagram
 ### 4. Plano de testes
 Para a realização dos testes, utilizamos da abordagem de testes manuais. Os testes começaram a ser feitos após a finalização da versão inicial da nossa aplicação. Decidimos começar com os testes manuais, que foram feitos da seguinte forma: primeiro um teste geral, simulando um usuário, testando as funcionalidades e alguns limites, mas nada procedural. A rodada de testes seguinte, seguiu um certo procedimento: rastreamos e anotamos os happy paths possíveis da aplicação e os possíveis erros nesses paths (imagem do caderno), a partir disso foi sendo testado caminho por caminho, partindo primeiro dos happy paths para garantir que o “certo” já estava funcionando. Após isso foi testado os possíveis erros nesses nos caminhos testados.
 
+**Caminhos:**
+
+***Para uma base, inputs inválidos são referências para um campo preenchido só com o caracter espaço. Nesses testes de inputs inválidos também foram feitos testes colocando espaços no começo e no final do input para ver se o trim() está funcionando corretamente.***
+
+**Registrar um admin:** clicar no botão de registrar na primeira tela -> preencher os inputs com dados corretos -> selecionar admin no radio button -> clicar no botão Register. **Esperado:** Aparecer a mensagem: “Registration successful. You can now log in.” e voltar para a tela inicial. **Resultado dentro do esperado no primeiro teste.**
+
+Tentar registar um admin sem preencher todos os campos: clicar no botão de registrar na primeira tela -> preencher um ou dois dos três inputs -> selecionar admin no radio button -> clicar no botão Register. Esperado: Aparecer a mensagem: “Fill in all fields to register.” e voltar para a tela de cadastro. Campos não estão verificando strings vazias, portanto está cadastrando admins sem nome ou com senhas vazias. - CORRIGIDO
+
+Tentar registar um admin preenchendo senhas diferentes nos campos Password e Confirm Password: clicar no botão de registrar na primeira tela -> preencher os três inputs, porém com valores diferente nos campos Password e Confirm Password -> selecionar admin no radio button -> clicar no botão Register. Esperado: Aparecer a mensagem: “Passwords do not match.” e voltar para a tela de cadastro. Resultado dentro do esperado no primeiro teste.
+
+Tentar registar um admin preenchendo os campos com inputs inválidos: clicar no botão de registrar na primeira tela -> preencher inputs apenas utilizando o caracterer espaço -> selecionar admin no radio button -> clicar no botão Register. Esperado: Aparecer a mensagem: “Fill in all fields to register.” e voltar para a tela de cadastro. Campos não estão verificando strings vazias, portanto está cadastrando admins sem nome ou com senhas vazias. - CORRIGIDO
+
+Tentar registar um admin preenchendo todos os campos corretamente, porém sem selecionar o radio button: clicar no botão de registrar na primeira tela ->  preencher os inputs com dados corretos -> não selecionar nenhuma opção do radio button -> clicar no botão Register. Esperado: Aparecer a mensagem: “Choose a role.” e voltar para a tela de cadastro. Cadastrando usuários como Librarians. - CORRIGIDO
+
+Tentar registar um admin com um username já cadastrado: clicar no botão de registrar na primeira tela ->  preencher os inputs com dados corretos, porém preencher username com um username já cadastrado -> selecionar admin no radio button -> clicar no botão Register. Esperado: Aparecer a mensagem: “Username already exists, change and try again.” e voltar para a tela de cadastro. Cadastrando usuários com mesmo username. - CORRIGIDO
+
+Realizar login como um admin: Preencher os campos de Username e Password corretamente na primeira tela -> clicar no botão de Login. Esperado: Abrir a segunda tela, cujo title é Library Management System. Resultado dentro do esperado no primeiro teste.
+
+Tentar realizar login como um admin com dados inválidos: Preencher os campos de Username e Password com valores errados na primeira tela -> clicar no botão de Login. Esperado: Aparecer mensagem: “invalid username or password” e voltar para tela de login. Resultado dentro do esperado no primeiro teste.
+
+Adicionar um livro como um admin: Realizar login com uma conta admin -> preencher os quatro primeiros campos da segunda tela corretamente -> clicar no botão Add Book. Esperado: Aparecer a mensagem: “Book added successfully!”. Resultado dentro do esperado no primeiro teste.
+
+Tentar adicionar um livro como um admin sem preencher todos os campos: Realizar login com uma conta admin -> preencher um, dois, ou três dos quatro primeiros campos -> clicar no botão Add Book. Esperado: Aparecer a mensagem: “All fields are required.” e voltar para a tela de Books. Resultado dentro do esperado no primeiro teste.
+
+Tentar adicionar um livro como um admin preenchendo os campos com inputs inválidos: Realizar login com uma conta admin -> preencher inputs apenas utilizando o caracterer espaço -> clicar no botão Add Book.  Esperado: Aparecer a mensagem: “All fields are required.” e voltar para a tela de Books. Está adicionando livro com espaço vazio. - CORRIGIDO
+
+Tentar adicionar um livro como um admin utilizando um ISBN já existente: Realizar login com uma conta admin -> preencher os campos Title, Author e Category corretamente e, preencher o campo ISBN com um ISBN já utilizado -> clicar no botão Add Book. Esperado: Aparecer a mensagem: “Book with this ISBN already exists.” e voltar para a tela de Books. Resultado dentro do esperado no primeiro teste.
+
+Atualizar livro como um admin: Realizar login com uma conta admin -> preencher o campo ISBN com um ISBN válido -> clicar no botão Update Book -> faça a/as alterações desejadas nos campos na tela que aparecer, com informações válidas -> clicar no botão Update. Esperado: Aparecer a mensagem “Book updated successfully!” e voltar para a tela de Books. Resultado dentro do esperado no primeiro teste.
+
+Atualizar livro como um admin sem alterar nenhum campo: Realizar login com uma conta admin -> preencher o campo ISBN com um ISBN válido -> clicar no botão Update Book -> clicar no botão Update. Esperado: Aparecer a mensagem “Book updated successfully!” e voltar para a tela de Books. Resultado dentro do esperado no primeiro teste.
+
+Atualizar livro, adicionado por um outro usuário, como um admin: Realizar login com uma conta admin -> preencher o campo ISBN com um ISBN válido de um livro cadastrado por um outro usuário -> clicar no botão Update Book -> faça a/as alterações desejadas nos campos na tela que aparecer, com informações válidas -> clicar no botão Update. Esperado: Aparecer a mensagem “Book updated successfully!” e voltar para a tela de Books. Resultado dentro do esperado no primeiro teste.
+
+Tentar atualizar um livro como um admin sem preencher todos os campos: Realizar login com uma conta admin -> preencher o campo ISBN com um ISBN válido -> clicar no botão Update Book -> preencher um ou dois dos três inputs, ou apagar alguns dos campos para deixa-lo vazio -> clicar no botão Update. Esperado: Aparecer a mensagem: “All fields are required.” e voltar para a tela de Books. Resultado dentro do esperado no primeiro teste.
+
+Tentar atualizar um livro como um admin preenchendo os campos com inputs inválidos: Realizar login com uma conta admin -> preencher o campo ISBN com um ISBN válido -> clicar no botão Update Book -> preencher inputs apenas utilizando o caracterer espaço -> clicar no botão Update. Esperado: Aparecer a mensagem: “All fields are required.” e voltar para a tela de Books. Está atualizando livro com espaço vazio. - CORRIGIDO
+
+Tentar atualizar um livro como um admin utilizando um ISBN que não existe: Realizar login com uma conta admin -> preencher o campo ISBN com um ISBN inexistente -> clicar no botão Update Book. Esperado: Aparecer a mensagem: “Book with this ISBN does not exist.” e voltar para a tela de Books. Resultado dentro do esperado no primeiro teste.
+
+Deletar um livro como um admin: Realizar login com uma conta admin -> preencher o campo ISBN com um ISBN válido -> clicar no botão Delete Book. Esperado: Aparecer a mensagem: “Book deleted successfully!” e voltar para a tela de Books. Resultado dentro do esperado no primeiro teste.
+
+Deletar um livro, adicionado por um outro usuário, como um admin: Realizar login com uma conta admin -> preencher o campo ISBN com um ISBN válido de um livro cadastrado por um outro usuário -> clicar no botão Delete Book. Esperado: Aparecer a mensagem: “Book deleted successfully!” e voltar para a tela de Books. Resultado dentro do esperado no primeiro teste.
+
+Tentar deletar um livro como um admin utilizando um ISBN que não existe: Realizar login com uma conta admin -> preencher o campo ISBN com um ISBN inexistente -> clicar no botão Delete Book. Esperado: Aparecer a mensagem: “Book with this ISBN does not exist.” e voltar para a tela de Books. Resultado dentro do esperado no primeiro teste.
+
+Procurar um livro baseado no título como um admin: Realizar login com uma conta admin -> selecionar Title no campo Criteria -> digitar um nome de livro válido no campo Search -> clicar no botão Search book. Esperado: Aparecer os dados do livro pesquisado na box abaixo.  Resultado dentro do esperado no primeiro teste.
+
+Procurar um livro, adicionado por outro usuário, baseado no título como um admin: Realizar login com uma conta admin -> selecionar Title no campo Criteria -> digitar um nome de livro válido, adicionado por outro usuário, no campo Search -> clicar no botão Search book. Esperado: Aparecer os dados do livro pesquisado na box abaixo.  Resultado dentro do esperado no primeiro teste.
+
+Tentar procurar um livro baseado no título como admin, mas colocando um título que não existe: Realizar login com uma conta admin -> selecionar Title no campo Criteria -> digitar um nome de livro inexistente no campo Search -> clicar no botão Search book. Esperado: Aparecer a mensagem “No results found.” na box abaixo.  Resultado dentro do esperado no primeiro teste.
+
+Procurar um livro baseado no autor como um admin: Realizar login com uma conta admin -> selecionar Author no campo Criteria -> digitar um autor de livro válido no campo Search -> clicar no botão Search book. Esperado: Aparecer os dados do livro pesquisado na box abaixo.  Resultado dentro do esperado no primeiro teste.
+
+Procurar um livro, adicionado por outro usuário, baseado no autor como um admin: Realizar login com uma conta admin -> selecionar Author no campo Criteria -> digitar um autor de livro válido, adicionado por outro usuário, no campo Search -> clicar no botão Search book. Esperado: Aparecer os dados do livro pesquisado na box abaixo.  Resultado dentro do esperado no primeiro teste.
+
+Tentar procurar um livro baseado no autor como admin, mas colocando um autor que não existe: Realizar login com uma conta admin -> selecionar Author no campo Criteria -> digitar um autor de livro inexistente no campo Search -> clicar no botão Search book. Esperado: Aparecer a mensagem “No results found.” na box abaixo.  Resultado dentro do esperado no primeiro teste.
+
+
+Procurar um livro baseado no ISBN como um admin: Realizar login com uma conta admin -> selecionar ISBN no campo Criteria -> digitar um ISBN de livro válido no campo Search -> clicar no botão Search book. Esperado: Aparecer os dados do livro pesquisado na box abaixo.  Resultado dentro do esperado no primeiro teste.
+
+Procurar um livro, adicionado por outro usuário, baseado no ISBN como um admin: Realizar login com uma conta admin -> selecionar ISBN no campo Criteria -> digitar um ISBN de livro válido, adicionado por outro usuário, no campo Search -> clicar no botão Search book. Esperado: Aparecer os dados do livro pesquisado na box abaixo.  Resultado dentro do esperado no primeiro teste.
+
+Tentar procurar um livro baseado no ISBN como admin, mas colocando um ISBN que não existe: Realizar login com uma conta admin -> selecionar ISBN no campo Criteria -> digitar um ISBN de livro inexistente no campo Search -> clicar no botão Search book. Esperado: Aparecer a mensagem “No results found.” na box abaixo.  Resultado dentro do esperado no primeiro teste.
+
+Procurar um livro baseado na categoria como um admin: Realizar login com uma conta admin -> selecionar Category no campo Criteria -> digitar uma categoria de livro válido no campo Search -> clicar no botão Search book. Esperado: Aparecer os dados do livro pesquisado na box abaixo.  Resultado dentro do esperado no primeiro teste.
+
+Procurar um livro, adicionado por outro usuário, baseado na categoria como um admin: Realizar login com uma conta admin -> selecionar Category no campo Criteria -> digitar uma categoria de livro válido, adicionado por outro usuário, no campo Search -> clicar no botão Search book. Esperado: Aparecer os dados do livro pesquisado na box abaixo.  Resultado dentro do esperado no primeiro teste.
+
+Tentar procurar um livro baseado na categoria como admin, mas colocando um ISBN que não existe: Realizar login com uma conta admin -> selecionar Category no campo Criteria -> digitar uma categoria de livro inexistente no campo Search -> clicar no botão Search book. Esperado: Aparecer a mensagem “No results found.” na box abaixo.  Resultado dentro do esperado no primeiro teste.
+
+Mostrar todos os livros como um admin: Realizar login como um admin -> clicar no botão Show all books. Esperado: Aparecer todos os livros cadastrados no banco de dados na box abaixo. Resultado dentro do esperado no primeiro teste.
+
+Adicionar cliente como admin: Realizar login como admin -> clicar na aba Patrons -> preencher os dois primeiros inputs com dados válidos -> clicar no botão Add Patron. Esperado: Aparecer a mensagem: “Patron added successfully!” e voltar para a tela de Patrons. Resultado dentro do esperado no primeiro teste.
+
+Tentar adicionar cliente, com nome ou contato já existente, como admin: Realizar login como admin -> clicar na aba Patrons -> preencher os dois primeiros inputs com dados já existentes -> clicar no botão Add Patron. Esperado: Aparecer a mensagem: “Patron with this name or contact info already exists.” e voltar para a tela de Patrons. Resultado dentro do esperado no primeiro teste.
+
+Tentar adicionar cliente, com nome ou contato vazios, como admin: Realizar login como admin -> clicar na aba Patrons -> preencher apenas um dos campos, ou nenhum -> clicar no botão Add Patron. Esperado: Aparecer a mensagem: “Name and contact info cannot be empty.” e voltar para a tela de Patrons. Resultado dentro do esperado no primeiro teste.
+
+Tentar adicionar cliente, com dados inválidos, como admin: Realizar login como admin -> clicar na aba Patrons -> preencher compos com dados inválidos -> clicar no botão Add Patron. Esperado: Aparecer a mensagem: “Name and contact info cannot be empty.” e voltar para a tela de Patrons. Adicionando cliente com nome e contato inválidos. - CORRIGIDO
+
+Atualizar cliente como admin: Realizar login como admin -> clicar na aba Patrons -> preencher o terceiro e quarto input com dados válidos -> clicar no botão Update Patron -> Preencher o dialog de username corretamente -> clicar no botão OK -> Preencher o dialog password corretamente -> Clicar Ok. Esperado: Aparecer a mensagem: “Patron updated successfully!” e voltar para a tela de Patrons. Resultado dentro do esperado no primeiro teste.
+
+Tentar atualizar cliente, sem preencher um dos dialogs, como admin: Realizar login como admin -> clicar na aba Patrons -> preencher o terceiro e quarto input com dados válidos -> clicar no botão Update Patron -> Apagar o conteúdo do campo username do dialog que aparecer -> clicar no botão OK -> Preencher o dialog password corretamente -> Clicar Ok. Esperado: Aparecer a mensagem: “Name and contact cannot be blank.” e voltar para a tela de Patrons. Resultado dentro do esperado no primeiro teste.
+
+Tentar atualizar cliente, preenchendo um dos dialogs com inputs inválidos, como admin: Realizar login como admin -> clicar na aba Patrons -> preencher o terceiro e quarto input com dados válidos -> clicar no botão Update Patron -> Preencher o dialog de username com caracterer de espaço -> clicar no botão OK -> Preencher o dialog password corretamente -> Clicar Ok. Esperado: Aparecer a mensagem: “Name and contact cannot be blank.” e voltar para a tela de Patrons. Resultado dentro do esperado no primeiro teste.
+
+Cancelar uma atualização de cliente no primeiro dialog como admin: Realizar login como admin -> clicar na aba Patrons -> preencher o terceiro e quarto input com dados válidos -> clicar no botão Update Patron -> Clicar no botão Cancel->Esperado: Voltar para a tela de cliente. Aparece o dialog de password.
+
+Deletar cliente como admin: Realizar login como admin -> clicar na aba Patrons -> preencher o terceiro e quarto input com dados válidos -> clicar no botão Delete Patron. Esperado: Aparecer a mensagem: “Patron deleted successfully!” e voltar para a tela de Patrons. Resultado dentro do esperado no primeiro teste.
+
+Tentar deletar cliente, preenchendo o campo com valores inválidos ou nulos, como admin: Realizar login como admin -> clicar na aba Patrons -> preencher o terceiro e quarto input com dados inválidos -> clicar no botão Delete Patron. Esperado: Aparecer a mensagem: “Patron with this name and contact info does not exist.” e voltar para a tela de Patrons. Resultado dentro do esperado no primeiro teste.
+
+Procurar um cliente, baseado no nome, como um admin: Realizar login com uma conta admin -> clicar na aba Patrons -> selecionar Name no campo Criteria -> digitar um nome de um cliente válido no campo Search -> clicar no botão Search. Esperado: Aparecer os dados do cliente pesquisado na box abaixo.  Resultado dentro do esperado no primeiro teste.
+
+Tentar procurar um cliente, preenchendo o campo nome com valor inválido ou nulo, como um admin: Realizar login com uma conta admin -> clicar na aba Patrons -> selecionar Name no campo Criteria -> digitar um nome de um cliente inválido no campo Search -> clicar no botão Search. Esperado: Aparecer a mensagem: “No results found.” na box abaixo.  Resultado dentro do esperado no primeiro teste.
+
+Procurar um cliente, baseado no contato, como um admin: Realizar login com uma conta admin -> clicar na aba Patrons -> selecionar Contact Information no campo Criteria -> digitar um contato de um cliente válido no campo Search -> clicar no botão Search. Esperado: Aparecer os dados do cliente pesquisado na box abaixo.  Resultado dentro do esperado no primeiro teste.
+
+Tentar procurar um cliente, preenchendo o campo contato com valor inválido ou nulo, como um admin: Realizar login com uma conta admin -> clicar na aba Patrons -> selecionar Contact Information no campo Criteria -> digitar um nome de um cliente inválido no campo Search -> clicar no botão Search. Esperado: Aparecer a mensagem: “No results found.” na box abaixo.  Resultado dentro do esperado no primeiro teste.
+
+Realizar um emprestimo como um admin: Realizar login com uma conta admin -> Clicar na aba Loans -> preencher os campos com valores válidos -> Clicar no botão Check Out. Esperado: Aparecer a mensagem: “Book checked out successfully!”, aparecer os dados do empréstimo na box abaixo e o livro tem que ter mudado o status de Available para false. Resultado dentro do esperado no primeiro teste.
+
+
+	Registrar um bibliotecário: clicar no botão de registrar na primeira tela -> preencher os inputs com dados corretos -> selecionar librarian no radio button -> clicar no botão Register. Esperado: Aparecer a mensagem: “Registration successful. You can now log in.” Resultado dentro do esperado no primeiro teste.
+
+	Tentar registar um bibliotecário sem preencher todos os campos: clicar no botão de registrar na primeira tela -> preencher um ou dois dos três inputs -> selecionar librarian no radio button -> clicar no botão Register. Esperado: Aparecer a mensagem: “Fill in all fields to register.” e voltar para a tela de cadastro. Campos não estão verificando strings vazias, portanto está cadastrando bibliotecários sem nome ou com senhas vazias.
+
+Tentar registar um bibliotecário preenchendo senhas diferentes nos campos Password e Confirm Password: clicar no botão de registrar na primeira tela -> preencher os três inputs, porém com valores diferente nos campos Password e Confirm Password -> selecionar librarian no radio button -> clicar no botão Register. Esperado: Aparecer a mensagem: “Passwords do not match.” e voltar para a tela de cadastro. Resultado dentro do esperado no primeiro teste.
+
+Tentar registar um bibliotecário preenchendo os campos com inputs inválidos: clicar no botão de registrar na primeira tela -> preencher inputs apenas utilizando o caracterer espaço -> selecionar librarian no radio button -> clicar no botão Register. Esperado: Aparecer a mensagem: “Fill in all fields to register.” e voltar para a tela de cadastro. Campos não estão verificando strings vazias, portanto está cadastrando bibliotecários sem nome ou com senhas vazias.
+
+Tentar registar um bibliotecário preenchendo todos os campos corretamente, porém sem selecionar o radio button: clicar no botão de registrar na primeira tela ->  preencher os inputs com dados corretos -> não selecionar nenhuma opção do radio button -> clicar no botão Register. Esperado: Aparecer a mensagem: “Choose a role.” e voltar para a tela de cadastro. Cadastrando usuários como Librarians.
+
+Realizar login como um bibliotecário: Preencher os campos de Username e Password corretamente na primeira tela -> clicar no botão de Login. Esperado: Abrir a segunda tela, cujo title é Library Management System. Resultado dentro do esperado no primeiro teste.
+
+Adicionar um livro como um bibliotecário: Realizar login com uma conta  bibliotecário -> preencher os quatro primeiros campos da segunda tela corretamente -> clicar no botão Add Book. Esperado: Aparecer a mensagem: “Book added successfully!”. Resultado dentro do esperado no primeiro teste.
+
+Tentar adicionar um livro como um bibliotecário sem preencher todos os campos: Realizar login com uma conta bibliotecário -> preencher um, dois, ou três dos quatro primeiros campos -> clicar no botão Add Book. Esperado: Aparecer a mensagem: “All fields are required.” e voltar para a tela de Books. Resultado dentro do esperado no primeiro teste.
+
+Tentar adicionar um livro como um bibliotecário preenchendo os campos com inputs inválidos: Realizar login com uma conta bibliotecário -> preencher inputs apenas utilizando o caracterer espaço -> clicar no botão Add Book.  Esperado: Aparecer a mensagem: “All fields are required.” e voltar para a tela de Books. Está adicionando livro com espaço vazio.
+
+Tentar adicionar um livro como um bibliotecário utilizando um ISBN já existente na conta do bibliotecário: Realizar login com uma conta bibliotecário -> preencher os campos Title, Author e Category corretamente e, preencher o campo ISBN com um ISBN já utilizado na conta do bibliotecário -> clicar no botão Add Book. Esperado: Aparecer a mensagem: “Book with this ISBN already exists.” e voltar para a tela de Books. Resultado dentro do esperado no primeiro teste.
+
+Tentar adicionar um livro como um bibliotecário utilizando um ISBN já existente criado por outro usuário: Realizar login com uma conta bibliotecário -> preencher os campos Title, Author e Category corretamente e, preencher o campo ISBN com um ISBN já utilizado em outra conta -> clicar no botão Add Book. Esperado: Aparecer a mensagem: “Book with this ISBN already exists.” e voltar para a tela de Books. Adicionou livro com ISBN que já existe.
+
+Atualizar livro como um bibliotecário : Realizar login com uma conta bibliotecário -> preencher o campo ISBN com um ISBN válido -> clicar no botão Update Book -> faça a/as alterações desejadas nos campos na tela que aparecer, com informações válidas -> clicar no botão Update. Esperado: Aparecer a mensagem “Book updated successfully!” e voltar para a tela de Books. Resultado dentro do esperado no primeiro teste.
+
+Atualizar livro como um bibliotecário sem alterar nenhum campo: Realizar login com uma conta bibliotecário -> preencher o campo ISBN com um ISBN válido -> clicar no botão Update Book -> clicar no botão Update. Esperado: Aparecer a mensagem “Book updated successfully!” e voltar para a tela de Books. Resultado dentro do esperado no primeiro teste.
+
+Tentar atualizar livro, adicionado por um outro usuário, como um bibliotecário: Realizar login com uma conta bibliotecário -> preencher o campo ISBN com um ISBN válido de um livro cadastrado por um outro usuário -> clicar no botão Update Book -> faça a/as alterações desejadas nos campos na tela que aparecer, com informações válidas -> clicar no botão Update. Esperado: Aparecer a mensagem “Book with this ISBN does not exist” e voltar para a tela de Books. Resultado dentro do esperado no primeiro teste.
+
+Tentar atualizar um livro como um bibliotecário sem preencher todos os campos: Realizar login com uma conta bibliotecário -> preencher o campo ISBN com um ISBN válido -> clicar no botão Update Book -> preencher um ou dois dos três inputs, ou apagar alguns dos campos para deixa-lo vazio -> clicar no botão Update. Esperado: Aparecer a mensagem: “All fields are required.” e voltar para a tela de Books. Resultado dentro do esperado no primeiro teste.
+
+Tentar atualizar um livro como um bibliotecário preenchendo os campos com inputs inválidos: Realizar login com uma conta bibliotecário -> preencher o campo ISBN com um ISBN válido -> clicar no botão Update Book -> preencher inputs apenas utilizando o caracterer espaço -> clicar no botão Update. Esperado: Aparecer a mensagem: “All fields are required.” e voltar para a tela de Books. Está atualizando livro com espaço vazio.
+
+Tentar atualizar um livro como um bibliotecário utilizando um ISBN que não existe: Realizar login com uma conta bibliotecário -> preencher o campo ISBN com um ISBN inexistente -> clicar no botão Update Book. Esperado: Aparecer a mensagem: “Book with this ISBN does not exist.” e voltar para a tela de Books. Resultado dentro do esperado no primeiro teste.
+
+Deletar um livro como um bibliotecário: Realizar login com uma conta bibliotecário -> preencher o campo ISBN com um ISBN válido -> clicar no botão Delete Book. Esperado: Aparecer a mensagem: “Book deleted successfully!” e voltar para a tela de Books. Resultado dentro do esperado no primeiro teste.
+
+Tentar deletar um livro, adicionado por um outro usuário, como um bibliotecário: Realizar login com uma conta bibliotecário -> preencher o campo ISBN com um ISBN válido de um livro cadastrado por um outro usuário -> clicar no botão Delete Book. Esperado: Aparecer a mensagem: “Book with this ISBN does not exist.” e voltar para a tela de Books. Resultado dentro do esperado no primeiro teste.
+
+Tentar deletar um livro como um bibliotecário utilizando um ISBN que não existe: Realizar login com uma conta bibliotecário -> preencher o campo ISBN com um ISBN inexistente -> clicar no botão Delete Book. Esperado: Aparecer a mensagem: “Book with this ISBN does not exist.” e voltar para a tela de Books. Resultado dentro do esperado no primeiro teste.
+
+Procurar um livro baseado no título como um bibliotecário: Realizar login com uma conta bibliotecário -> selecionar Title no campo Criteria -> digitar um nome de livro válido no campo Search -> clicar no botão Search book. Esperado: Aparecer os dados do livro pesquisado na box abaixo. Resultado dentro do esperado no primeiro teste.
+
+Tentar procurar um livro, adicionado por outro usuário, baseado no título como um bibliotecário: Realizar login com uma conta bibliotecário -> selecionar Title no campo Criteria -> digitar um nome de livro válido, adicionado por outro usuário, no campo Search -> clicar no botão Search book. Esperado:  Aparecer a mensagem “No results found.” na box abaixo. Resultado dentro do esperado no primeiro teste.
+
+Tentar procurar um livro baseado no título como bibliotecário, mas colocando um título que não existe: Realizar login com uma conta bibliotecário -> selecionar Title no campo Criteria -> digitar um nome de livro inexistente no campo Search -> clicar no botão Search book. Esperado: Aparecer a mensagem “No results found.” na box abaixo.  Resultado dentro do esperado no primeiro teste.
+
+Procurar um livro baseado no autor como um bibliotecário: Realizar login com uma conta bibliotecário -> selecionar Author no campo Criteria -> digitar um autor de livro válido no campo Search -> clicar no botão Search book. Esperado: Aparecer os dados do livro pesquisado na box abaixo. Resultado dentro do esperado no primeiro teste.
+
+Tentar procurar um livro, adicionado por outro usuário, baseado no autor como um bibliotecário: Realizar login com uma conta bibliotecário -> selecionar Author no campo Criteria -> digitar um autor de livro válido, adicionado por outro usuário, no campo Search -> clicar no botão Search book. Esperado: Aparecer a mensagem “No results found.” na box abaixo. Resultado dentro do esperado no primeiro teste.
+
+Tentar procurar um livro baseado no autor como bibliotecário, mas colocando um autor que não existe: Realizar login com uma conta bibliotecário -> selecionar Author no campo Criteria -> digitar um autor de livro inexistente no campo Search -> clicar no botão Search book. Esperado: Aparecer a mensagem “No results found.” na box abaixo. Resultado dentro do esperado no primeiro teste.
+
+Procurar um livro baseado no ISBN como um bibliotecário: Realizar login com uma conta bibliotecário -> selecionar ISBN no campo Criteria -> digitar um ISBN de livro válido no campo Search -> clicar no botão Search book. Esperado: Aparecer os dados do livro pesquisado, com exceção do usuário que o adicionou, na box abaixo. Resultado dentro do esperado no primeiro teste.
+
+Tentar procurar um livro, adicionado por outro usuário, baseado no ISBN como um bibliotecário: Realizar login com uma conta bibliotecário -> selecionar ISBN no campo Criteria -> digitar um ISBN de livro válido, adicionado por outro usuário, no campo Search -> clicar no botão Search book. Esperado: Aparecer a mensagem “No results found.” na box abaixo. Resultado dentro do esperado no primeiro teste.
+
+Tentar procurar um livro baseado no ISBN como bibliotecário, mas colocando um ISBN que não existe: Realizar login com uma conta bibliotecário -> selecionar ISBN no campo Criteria -> digitar um ISBN de livro inexistente no campo Search -> clicar no botão Search book. Esperado: Aparecer a mensagem “No results found.” na box abaixo.  Resultado dentro do esperado no primeiro teste.
+
+Procurar um livro baseado na categoria como um bibliotecário: Realizar login com uma conta bibliotecário -> selecionar Category no campo Criteria -> digitar uma categoria de livro válido no campo Search -> clicar no botão Search book. Esperado: Aparecer os dados do livro pesquisado na box abaixo.  Resultado dentro do esperado no primeiro teste.
+
+Tentar procurar um livro, adicionado por outro usuário, baseado na categoria como um bibliotecário: Realizar login com uma conta bibliotecário -> selecionar Category no campo Criteria -> digitar uma categoria de livro válido, adicionado por outro usuário, no campo Search -> clicar no botão Search book. Esperado: Aparecer a mensagem “No results found.” na box abaixo. Resultado dentro do esperado no primeiro teste.
+
+Tentar procurar um livro baseado na categoria como bibliotecário, mas colocando um ISBN que não existe: Realizar login com uma conta bibliotecário -> selecionar Category no campo Criteria -> digitar uma categoria de livro inexistente no campo Search -> clicar no botão Search book. Esperado: Aparecer a mensagem “No results found.” na box abaixo.  Resultado dentro do esperado no primeiro teste.
+
+Mostrar todos os livros como um bibliotecário: Realizar login como um bibliotecário -> clicar no botão Show all books. Esperado: Aparecer todos os livros cadastrados pelo bibliotecário. Resultado dentro do esperado no primeiro teste.
+
+
 ### 5. Resultados dos testes
 
 ### 6. Procedimentos de Construção
