@@ -133,7 +133,7 @@ classDiagram
 - O código inclui comentários explicando a lógica e o funcionamento das diferentes partes do sistema.
 
 4. Plano de testes
-
+  Para a realização dos testes, utilizamos da abordagem de testes manuais. Os testes começaram a ser feitos após a finalização da versão inicial da nossa aplicação. Decidimos começar com os testes manuais, que foram feitos da seguinte forma: primeiro um teste geral, simulando um usuário, testando as funcionalidades e alguns limites, mas nada procedural. A rodada de testes seguinte, seguiu um certo procedimento: rastreamos e anotamos os happy paths possíveis da aplicação e os possíveis erros nesses paths (imagem do caderno), a partir disso foi sendo testado caminho por caminho, partindo primeiro dos happy paths para garantir que o “certo” já estava funcionando. Após isso foi testado os possíveis erros nesses nos caminhos testados.
 5. Resultados dos testes
 
 6. Procedimentos de Construção
