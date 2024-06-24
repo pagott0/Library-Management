@@ -183,10 +183,10 @@ public class MainGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Obtém os valores inseridos pelo usuário
-                String username = usernameField.getText();
-                String password = new String(passwordField.getPassword());
-                String confirmPassword = new String(confirmPasswordField.getPassword());
-                if(username.trim().isEmpty() || password.trim().isEmpty() || confirmPassword.trim().isEmpty()) {
+                String username = usernameField.getText().trim();
+                String password = (new String(passwordField.getPassword())).trim();
+                String confirmPassword = (new String(confirmPasswordField.getPassword())).trim();
+                if(username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
                     JOptionPane.showMessageDialog(frame, "Fill in all fields to register.");
                     return;
                 }
@@ -372,10 +372,10 @@ public class MainGUI {
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String title = titleField.getText();
-                String author = authorField.getText();
-                String isbn = isbnField.getText();
-                String category = categoryField.getText();
+                String title = titleField.getText().trim();
+                String author = authorField.getText().trim();
+                String isbn = isbnField.getText().trim();
+                String category = categoryField.getText().trim();
 
                 if (!isAdmin) {
                     JOptionPane.showMessageDialog(panel, "You do not have permission to add books, only admins can do it.");
@@ -383,7 +383,7 @@ public class MainGUI {
                 }
 
                 // Verifica se todos os campos estão preenchidos
-                if (title.trim().isEmpty() || author.trim().isEmpty() || isbn.trim().isEmpty() || category.trim().isEmpty()) {
+                if (title.isEmpty() || author.isEmpty() || isbn.isEmpty() || category.isEmpty()) {
                     JOptionPane.showMessageDialog(panel, "All fields are required.");
                     return;
                 }
@@ -548,12 +548,12 @@ public class MainGUI {
                 confirmUpdateButton.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        String newTitle = updateTitleField.getText();
-                        String newAuthor = updateAuthorField.getText();
-                        String newCategory = updateCategoryField.getText();
+                        String newTitle = updateTitleField.getText().trim();
+                        String newAuthor = updateAuthorField.getText().trim();
+                        String newCategory = updateCategoryField.getText().trim();
 
                         // Verifica se todos os campos estão preenchidos
-                        if (newTitle.trim().isEmpty() || newAuthor.trim().isEmpty() || newCategory.trim().isEmpty()) {
+                        if (newTitle.isEmpty() || newAuthor.isEmpty() || newCategory.isEmpty()) {
                             JOptionPane.showMessageDialog(updateDialog, "All fields are required.");
                             return;
                         }
