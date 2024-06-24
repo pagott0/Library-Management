@@ -187,9 +187,7 @@ Para a realização dos testes, utilizamos da abordagem de testes manuais. Os te
 
 **Tentar procurar um livro baseado no título como admin, mas colocando um título que não existe:** realizar login com uma conta admin -> selecionar Title no campo Criteria -> digitar um nome de livro inexistente no campo Search -> clicar no botão Search book. **Esperado:** Aparecer a mensagem “No results found.” na box abaixo. **Resultado dentro do esperado no primeiro teste.**
 
-**Procurar um livro baseado no autor como um admin:** realizar login com uma conta admin -> selecionar Author no campo Criteria -> digitar um autor de livro válido no campo Search -> clicar no botão Search book. **Esperado:** Ap
-
-arecer os dados do livro pesquisado na box abaixo. **Resultado dentro do esperado no primeiro teste.**
+**Procurar um livro baseado no autor como um admin:** realizar login com uma conta admin -> selecionar Author no campo Criteria -> digitar um autor de livro válido no campo Search -> clicar no botão Search book. **Esperado:** Aparecer os dados do livro pesquisado na box abaixo. **Resultado dentro do esperado no primeiro teste.**
 
 **Procurar um livro, adicionado por outro usuário, baseado no autor como um admin:** realizar login com uma conta admin -> selecionar Author no campo Criteria -> digitar um autor de livro válido, adicionado por outro usuário, no campo Search -> clicar no botão Search book. **Esperado:** Aparecer os dados do livro pesquisado na box abaixo. **Resultado dentro do esperado no primeiro teste.**
 
@@ -241,9 +239,7 @@ arecer os dados do livro pesquisado na box abaixo. **Resultado dentro do esperad
 
 **Tentar atualizar um livro como um librarian preenchendo os campos com inputs inválidos:** realizar login com uma conta librarian -> preencher o campo ISBN com um ISBN válido -> clicar no botão Update Book -> preencher inputs apenas utilizando o caracterer espaço -> clicar no botão Update. **Esperado:** Aparecer a mensagem: “All fields are required.” e voltar para a tela de Books. **Está atualizando livro com espaço vazio. - CORRIGIDO**
 
-**Tentar atualizar
-
-um livro como um librarian utilizando um ISBN que não existe:** realizar login com uma conta librarian -> preencher o campo ISBN com um ISBN inexistente -> clicar no botão Update Book. **Esperado:** Aparecer a mensagem: “Book with this ISBN does not exist.” e voltar para a tela de Books. **Resultado dentro do esperado no primeiro teste.**
+**Tentar atualizar um livro como um librarian utilizando um ISBN que não existe:** realizar login com uma conta librarian -> preencher o campo ISBN com um ISBN inexistente -> clicar no botão Update Book. **Esperado:** Aparecer a mensagem: “Book with this ISBN does not exist.” e voltar para a tela de Books. **Resultado dentro do esperado no primeiro teste.**
 
 **Deletar um livro como um librarian:** realizar login com uma conta librarian -> preencher o campo ISBN com um ISBN válido -> clicar no botão Delete Book. **Esperado:** Aparecer a mensagem: “Book deleted successfully!” e voltar para a tela de Books. **Resultado dentro do esperado no primeiro teste.**
 
