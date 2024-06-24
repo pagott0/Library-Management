@@ -855,10 +855,10 @@ public class MainGUI {
 
                 // Atualiza o nome e contato do patrono
                 if (!newName.isEmpty()) {
-                    patron.setName(newName);
+                    patron.setName(newName.trim());
                 }
                 if (!newContact.isEmpty()) {
-                    patron.setContactInfo(newContact);
+                    patron.setContactInfo(newContact.trim());
                 }
                 JOptionPane.showMessageDialog(panel, "Patron updated successfully!");
             }
