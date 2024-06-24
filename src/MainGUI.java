@@ -738,8 +738,8 @@ public class MainGUI {
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String name = nameField.getText();
-                String contact = contactField.getText();
+                String name = nameField.getText().trim();
+                String contact = contactField.getText().trim();
 
                 // Verifica se os campos de nome e contato estão vazios
                 if (name.isEmpty() || contact.isEmpty()) {
@@ -839,8 +839,8 @@ public class MainGUI {
                 }
 
                 // Solicita novo nome e contato para o patrono
-                String newName = JOptionPane.showInputDialog(panel, "Enter new name (leave blank to keep same):", patron.getName());
-                String newContact = JOptionPane.showInputDialog(panel, "Enter new contact (leave blank to keep same):", patron.getContactInfo());
+                String newName = JOptionPane.showInputDialog(panel, "Enter new name:", patron.getName());
+                String newContact = JOptionPane.showInputDialog(panel, "Enter new contact:", patron.getContactInfo());
 
                 if (newName == null || newContact == null) {
                     // O usuário cancelou a entrada
@@ -848,8 +848,8 @@ public class MainGUI {
                 }
 
                 // Verifica se ambos os campos estão vazios
-                if (newName.isEmpty() && newContact.isEmpty()) {
-                    JOptionPane.showMessageDialog(panel, "Both name and contact cannot be blank.");
+                if (newName.trim().isEmpty() || newContact.trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(panel, "Name and contact cannot be blank.");
                     return;
                 }
 
