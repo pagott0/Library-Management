@@ -317,6 +317,8 @@ Para uma base, inputs inválidos são referências para um campo preenchido só 
 
 **Tentar procurar um livro baseado no ISBN como librarian, mas colocando um ISBN que não existe:** realizar login com uma conta librarian -> selecionar ISBN no campo Criteria -> digitar um ISBN inexistente no campo Search -> clicar no botão Search book. **Esperado:** Aparecer a mensagem “No results found.” na box abaixo. **Resultado dentro do esperado no primeiro teste.**
 
+**Mostrar todos os livros como um librarian:** Realizar login como um librarian -> clicar no botão Show all books. **Esperado:** Aparecer todos os livros cadastrados. **Resultado dentro do esperado no primeiro teste.**
+
 
 ### 5. Resultados dos testes
 Como foi descrito no Test Plan, utilizamos testes manuais. Os testes manuais já tiveram resultado na primeira passagem de testes, na qual simulava um usuário, mas sem procedimentos. Nessa passagem descobrimos que o campo de insersão da data de devolução estava aceitando datas anteriores a data atual, comportamento no qual não deveria acontecer. Após isso discutimos e pesquisamos se era possível a utilização de um Date Picker ou apenas fazer uma validação do input e optamos por (x). Após essa primeria rodada de testes, passamos para os testes procedurais, no qual rastreamos os caminhos possiveis da aplicação e seus possíveis erros. Nessa etapa, fomos descobrindo vários detalhes de verificação de input, como por exemplo inserir valores vazios, valores apenas com o caracter espaço ou usuários com espaços no começo ou final da string. Outro ponto observado após rodar o programa várias vezes foi que a dimensão do JFrame poderia ser um pouco maior na vertical para o usuário não ter que remensionar a janela para consguir ver a box com os dados dos livros. Porém fomos percebendo que existiam algumas inconsistências nas funções de adim e bibliotecário. Estavámos fugindo do escopo inicial proposto no pdf disponibilizado no eDisciplinas, nessa primeira versão que montamos, os bibliotecários na verdade eram bibliotecas e o admin era um administrador das bibliotecas. Depois de identificar esse problema resolvemos ajustar as funcionalidades de cada usuário: Bibliotecários podem gerenciar clientes e empréstimos, enquanto administradores podem fazer isso e também gerenciar livros.
@@ -345,6 +347,7 @@ Para executar o código, siga os seguintes passos:
   - Gerenciamento de datas: A manipulação de datas em Java pode ser um pouco complexa, exigindo atenção na formatação e conversão de datas.
   - Dificuldade em definir funções e responsabilidades dos cargos de bibliotecário e administrador: A definição clara das funções e permissões de cada tipo de usuário é essencial para garantir a segurança e a integridade do sistema.
   - Desafio em definir como funcionario a questão dos empréstimos: A lógica de empréstimos e devoluções pode ser complexa, especialmente ao lidar com multas por atraso e controle de disponibilidade de livros.
+  - Tentamos adicionar o gradle e o maven no nosso prejeto para importamos biblioteca de Date Picker porém tivemos muitas dificuldades nesse processo e optamos por deixar assim.
 
 ### 8. Comentários Adicionais
   - O sistema de gerenciamento de biblioteca implementado é um projeto básico e pode ser expandido com mais funcionalidades, como:
@@ -354,3 +357,4 @@ Para executar o código, siga os seguintes passos:
   - A interface gráfica pode ser aprimorada com um design mais moderno.
   - A implementação de testes unitários é recomendada para garantir a qualidade do código.
   - O ISBN dos livros foi limitado apenas em números, mas para uma aplicação real, seria necessário considerar o formato completo do ISBN.
+  - Adicionar maven ou gradle para o porjeto
