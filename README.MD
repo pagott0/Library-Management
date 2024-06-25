@@ -244,6 +244,13 @@ Para uma base, inputs inválidos são referências para um campo preenchido só 
 
 **Realizar um empréstimo como um admin:** Realizar login com uma conta admin -> clicar na aba Loans -> preencher os campos com valores válidos -> clicar no botão Check Out. **Esperado:** Aparecer a mensagem: “Book checked out successfully!”, aparecer os dados do empréstimo na box abaixo e o livro tem que ter mudado o status de Available para false. **Resultado dentro do esperado no primeiro teste.**
 
+**Tentar realizar um empréstimo, preenchendo um ISBN inválido, como um admin:** Realizar login com uma conta admin -> clicar na aba Loans -> preencher os campos com valores válidos, com exceção do ISBN -> clicar no botão Check Out. **Esperado:** Aparecer a mensagem: “Failed to check out book.” **Resultado dentro do esperado no primeiro teste.**
+
+**Tentar realizar um empréstimo, preenchendo um cliente inválido, como um admin:** Realizar login com uma conta admin -> clicar na aba Loans -> preencher os campos com valores válidos, com exceção do nome do cliente -> clicar no botão Check Out. **Esperado:** Aparecer a mensagem: “Failed to check out book.” **Resultado dentro do esperado no primeiro teste.**
+
+**Tentar realizar um empréstimo, preenchendo uma data anterior a data atual, como um admin:** Realizar login com uma conta admin -> clicar na aba Loans -> preencher os campos com valores válidos, com exceção do data -> clicar no botão Check Out. **Esperado:** Aparecer a mensagem: “Failed to check out book.” **Resultado dentro do esperado no primeiro teste.**
+
+
 **Registrar um librarian:** clicar no botão de registrar na primeira tela -> preencher os inputs com dados corretos -> selecionar librarian no radio button -> clicar no botão Register. **Esperado:** Aparecer a mensagem: “Registration successful. You can now log in.” e voltar para a tela inicial. **Resultado dentro do esperado no primeiro teste.**
 
 **Tentar registar um librarian sem preencher todos os campos:** clicar no botão de registrar na primeira tela -> preencher um ou dois dos três inputs -> selecionar librarian no radio button -> clicar no botão Register. **Esperado:** Aparecer a mensagem: “Fill in all fields to register.” e voltar para a tela de cadastro. **Campos não estão verificando strings vazias, portanto está cadastrando librarians sem nome ou com senhas vazias. - CORRIGIDO**
