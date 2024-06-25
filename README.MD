@@ -137,6 +137,7 @@ Para a realização dos testes, utilizamos da abordagem de testes manuais. Os te
 
 **Caminhos:**
 
+> [!NOTE]
 ***Para uma base, inputs inválidos são referências para um campo preenchido só com o caracter espaço. Nesses testes de inputs inválidos também foram feitos testes colocando espaços no começo e no final do input para ver se o trim() está funcionando corretamente.***
 
 **Registrar um admin:** clicar no botão de registrar na primeira tela -> preencher os inputs com dados corretos -> selecionar admin no radio button -> clicar no botão Register. **Esperado:** Aparecer a mensagem: “Registration successful. You can now log in.” e voltar para a tela inicial. **Resultado dentro do esperado no primeiro teste.**
@@ -204,6 +205,7 @@ Para a realização dos testes, utilizamos da abordagem de testes manuais. Os te
 **Procurar um livro, adicionado por outro usuário, baseado no ISBN como um admin:** realizar login com uma conta admin -> selecionar ISBN no campo Criteria -> digitar um ISBN válido, adicionado por outro usuário, no campo Search -> clicar no botão Search book. **Esperado:** Aparecer os dados do livro pesquisado na box abaixo. **Resultado dentro do esperado no primeiro teste.**
 
 **Tentar procurar um livro baseado no ISBN como admin, mas colocando um ISBN que não existe:** realizar login com uma conta admin -> selecionar ISBN no campo Criteria -> digitar um ISBN inexistente no campo Search -> clicar no botão Search book. **Esperado:** Aparecer a mensagem “No results found.” na box abaixo. **Resultado dentro do esperado no primeiro teste.**
+
 
 **Registrar um librarian:** clicar no botão de registrar na primeira tela -> preencher os inputs com dados corretos -> selecionar librarian no radio button -> clicar no botão Register. **Esperado:** Aparecer a mensagem: “Registration successful. You can now log in.” e voltar para a tela inicial. **Resultado dentro do esperado no primeiro teste.**
 
