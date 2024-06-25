@@ -248,7 +248,7 @@ Para uma base, inputs inválidos são referências para um campo preenchido só 
 
 **Tentar realizar um empréstimo, preenchendo um cliente inválido, como um admin:** Realizar login com uma conta admin -> clicar na aba Loans -> preencher os campos com valores válidos, com exceção do nome do cliente -> clicar no botão Check Out. **Esperado:** Aparecer a mensagem: “Failed to check out book.” **Resultado dentro do esperado no primeiro teste.**
 
-**Tentar realizar um empréstimo, preenchendo uma data anterior a data atual, como um admin:** Realizar login com uma conta admin -> clicar na aba Loans -> preencher os campos com valores válidos, com exceção do data -> clicar no botão Check Out. **Esperado:** Aparecer a mensagem: “Failed to check out book.” **Resultado dentro do esperado no primeiro teste.**
+**Tentar realizar um empréstimo, preenchendo uma data anterior a data atual, como um admin:** Realizar login com uma conta admin -> clicar na aba Loans -> preencher os campos com valores válidos, com exceção do data -> clicar no botão Check Out. **Esperado:** Aparecer a mensagem: “Select an valid date.” **Adicionando empr´stimo com data inválida.**
 
 
 **Registrar um librarian:** clicar no botão de registrar na primeira tela -> preencher os inputs com dados corretos -> selecionar librarian no radio button -> clicar no botão Register. **Esperado:** Aparecer a mensagem: “Registration successful. You can now log in.” e voltar para a tela inicial. **Resultado dentro do esperado no primeiro teste.**
