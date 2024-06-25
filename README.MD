@@ -206,6 +206,43 @@ Para uma base, inputs inválidos são referências para um campo preenchido só 
 
 **Tentar procurar um livro baseado no ISBN como admin, mas colocando um ISBN que não existe:** realizar login com uma conta admin -> selecionar ISBN no campo Criteria -> digitar um ISBN inexistente no campo Search -> clicar no botão Search book. **Esperado:** Aparecer a mensagem “No results found.” na box abaixo. **Resultado dentro do esperado no primeiro teste.**
 
+**Procurar um livro baseado na categoria como um admin:** Realizar login com uma conta admin -> selecionar Category no campo Criteria -> digitar uma categoria de livro válido no campo Search -> clicar no botão Search book. **Esperado:** Aparecer os dados do livro pesquisado na box abaixo. **Resultado dentro do esperado no primeiro teste.**
+
+**Procurar um livro, adicionado por outro usuário, baseado na categoria como um admin:** Realizar login com uma conta admin -> selecionar Category no campo Criteria -> digitar uma categoria de livro válido, adicionado por outro usuário, no campo Search -> clicar no botão Search book. **Esperado:** Aparecer os dados do livro pesquisado na box abaixo. **Resultado dentro do esperado no primeiro teste.**
+
+**Tentar procurar um livro baseado na categoria como admin, mas colocando uma categoria que não existe:** Realizar login com uma conta admin -> selecionar Category no campo Criteria -> digitar uma categoria de livro inexistente no campo Search -> clicar no botão Search book. **Esperado:** Aparecer a mensagem: “No results found.” na box abaixo. **Resultado dentro do esperado no primeiro teste.**
+
+**Mostrar todos os livros como um admin:** Realizar login como um admin -> clicar no botão Show all books. **Esperado:** Aparecer todos os livros cadastrados no banco de dados na box abaixo. **Resultado dentro do esperado no primeiro teste.**
+
+**Adicionar cliente como admin:** Realizar login como admin -> clicar na aba Patrons -> preencher os dois primeiros inputs com dados válidos -> clicar no botão Add Patron. **Esperado:** Aparecer a mensagem: “Patron added successfully!” e voltar para a tela de Patrons. **Resultado dentro do esperado no primeiro teste.**
+
+**Tentar adicionar cliente, com nome ou contato já existente, como admin:** Realizar login como admin -> clicar na aba Patrons -> preencher os dois primeiros inputs com dados já existentes -> clicar no botão Add Patron. **Esperado:** Aparecer a mensagem: “Patron with this name or contact info already exists.” e voltar para a tela de Patrons. **Resultado dentro do esperado no primeiro teste.**
+
+**Tentar adicionar cliente, com nome ou contato vazios, como admin:** Realizar login como admin -> clicar na aba Patrons -> preencher apenas um dos campos, ou nenhum -> clicar no botão Add Patron. **Esperado:** Aparecer a mensagem: “Name and contact info cannot be empty.” e voltar para a tela de Patrons. **Resultado dentro do esperado no primeiro teste.**
+
+**Tentar adicionar cliente, com dados inválidos, como admin:** Realizar login como admin -> clicar na aba Patrons -> preencher campos com dados inválidos -> clicar no botão Add Patron. **Esperado:** Aparecer a mensagem: “Name and contact info cannot be empty.” e voltar para a tela de Patrons. **Adicionando cliente com nome e contato inválidos. - CORRIGIDO**
+
+**Atualizar cliente como admin:** Realizar login como admin -> clicar na aba Patrons -> preencher o terceiro e quarto input com dados válidos -> clicar no botão Update Patron -> Preencher o dialog de username corretamente -> clicar no botão OK -> Preencher o dialog password corretamente -> Clicar Ok. **Esperado:** Aparecer a mensagem: “Patron updated successfully!” e voltar para a tela de Patrons. **Resultado dentro do esperado no primeiro teste.**
+
+**Tentar atualizar cliente, sem preencher um dos dialogs, como admin:** Realizar login como admin -> clicar na aba Patrons -> preencher o terceiro e quarto input com dados válidos -> clicar no botão Update Patron -> Apagar o conteúdo do campo username do dialog que aparecer -> clicar no botão OK -> Preencher o dialog password corretamente -> Clicar Ok. **Esperado:** Aparecer a mensagem: “Name and contact cannot be blank.” e voltar para a tela de Patrons. **Resultado dentro do esperado no primeiro teste.**
+
+**Tentar atualizar cliente, preenchendo um dos dialogs com inputs inválidos, como admin:** Realizar login como admin -> clicar na aba Patrons -> preencher o terceiro e quarto input com dados válidos -> clicar no botão Update Patron -> Preencher o dialog de username com caracter de espaço -> clicar no botão OK -> Preencher o dialog password corretamente -> Clicar Ok. **Esperado:** Aparecer a mensagem: “Name and contact cannot be blank.” e voltar para a tela de Patrons. **Resultado dentro do esperado no primeiro teste.**
+
+**Cancelar uma atualização de cliente no primeiro dialog como admin:** Realizar login como admin -> clicar na aba Patrons -> preencher o terceiro e quarto input com dados válidos -> clicar no botão Update Patron -> Clicar no botão Cancel. **Esperado:** Voltar para a tela de cliente. **Aparece o dialog de password.**
+
+**Deletar cliente como admin:** Realizar login como admin -> clicar na aba Patrons -> preencher o terceiro e quarto input com dados válidos -> clicar no botão Delete Patron. **Esperado:** Aparecer a mensagem: “Patron deleted successfully!” e voltar para a tela de Patrons. **Resultado dentro do esperado no primeiro teste.**
+
+**Tentar deletar cliente, preenchendo o campo com valores inválidos ou nulos, como admin:** Realizar login como admin -> clicar na aba Patrons -> preencher o terceiro e quarto input com dados inválidos -> clicar no botão Delete Patron. **Esperado:** Aparecer a mensagem: “Patron with this name and contact info does not exist.” e voltar para a tela de Patrons. **Resultado dentro do esperado no primeiro teste.**
+
+**Procurar um cliente, baseado no nome, como um admin:** Realizar login com uma conta admin -> clicar na aba Patrons -> selecionar Name no campo Criteria -> digitar um nome de um cliente válido no campo Search -> clicar no botão Search. **Esperado:** Aparecer os dados do cliente pesquisado na box abaixo. **Resultado dentro do esperado no primeiro teste.**
+
+**Tentar procurar um cliente, preenchendo o campo nome com valor inválido ou nulo, como um admin:** Realizar login com uma conta admin -> clicar na aba Patrons -> selecionar Name no campo Criteria -> digitar um nome de um cliente inválido no campo Search -> clicar no botão Search. **Esperado:** Aparecer a mensagem: “No results found.” na box abaixo. **Resultado dentro do esperado no primeiro teste.**
+
+**Procurar um cliente, baseado no contato, como um admin:** Realizar login com uma conta admin -> clicar na aba Patrons -> selecionar Contact Information no campo Criteria -> digitar um contato de um cliente válido no campo Search -> clicar no botão Search. **Esperado:** Aparecer os dados do cliente pesquisado na box abaixo. **Resultado dentro do esperado no primeiro teste.**
+
+**Tentar procurar um cliente, preenchendo o campo contato com valor inválido ou nulo, como um admin:** Realizar login com uma conta admin -> clicar na aba Patrons -> selecionar Contact Information no campo Criteria -> digitar um contato de um cliente inválido no campo Search -> clicar no botão Search. **Esperado:** Aparecer a mensagem: “No results found.” na box abaixo. **Resultado dentro do esperado no primeiro teste.**
+
+**Realizar um empréstimo como um admin:** Realizar login com uma conta admin -> clicar na aba Loans -> preencher os campos com valores válidos -> clicar no botão Check Out. **Esperado:** Aparecer a mensagem: “Book checked out successfully!”, aparecer os dados do empréstimo na box abaixo e o livro tem que ter mudado o status de Available para false. **Resultado dentro do esperado no primeiro teste.**
 
 **Registrar um librarian:** clicar no botão de registrar na primeira tela -> preencher os inputs com dados corretos -> selecionar librarian no radio button -> clicar no botão Register. **Esperado:** Aparecer a mensagem: “Registration successful. You can now log in.” e voltar para a tela inicial. **Resultado dentro do esperado no primeiro teste.**
 
