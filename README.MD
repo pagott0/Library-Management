@@ -1,7 +1,7 @@
 Grupo 15:
-Enzo Vasconcellos Pagotto - 13632844
-Gabriel Pietro Leone - 13874729
-Rafael Romanhole Borrozino - 14604607
+- Enzo Vasconcellos Pagotto - 13632844
+- Gabriel Pietro Leone - 13874729
+- Rafael Romanhole Borrozino - 14604607
 
 ### 1. Requisitos Complementares
 Requisitos adicionais para a implementação do sistema de gerenciamento de biblioteca em Java:
