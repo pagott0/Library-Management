@@ -138,7 +138,7 @@ Para a realização dos testes, utilizamos da abordagem de testes manuais. Os te
 **Caminhos:**
 
 > [!NOTE]
-***Para uma base, inputs inválidos são referências para um campo preenchido só com o caracter espaço. Nesses testes de inputs inválidos também foram feitos testes colocando espaços no começo e no final do input para ver se o trim() está funcionando corretamente.***
+Para uma base, inputs inválidos são referências para um campo preenchido só com o caracter espaço. Nesses testes de inputs inválidos também foram feitos testes colocando espaços no começo e no final do input para ver se o trim() está funcionando corretamente.
 
 **Registrar um admin:** clicar no botão de registrar na primeira tela -> preencher os inputs com dados corretos -> selecionar admin no radio button -> clicar no botão Register. **Esperado:** Aparecer a mensagem: “Registration successful. You can now log in.” e voltar para a tela inicial. **Resultado dentro do esperado no primeiro teste.**
 
